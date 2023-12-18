@@ -24,13 +24,37 @@
         <el-form-item>
           <el-button
             :loading="loginLoading"
-            style="background: #999a9a; color: white"
+            style="background: #75bde7; color: white"
             @click="submitForm('ruleForm')"
             >登录</el-button
           >
         </el-form-item>
       </el-form>
     </el-card>
+    <!-- 外部logo展示 -->
+    <div>
+      <div class="wechat_logo">
+        <el-image
+          style="margin: 7px 5px"
+          :src="wechat_logo"
+          fit="cover"
+        ></el-image>
+      </div>
+      <div class="official_img">
+        <el-image
+          style="margin: 5px"
+          :src="official_img"
+          fit="cover"
+        ></el-image>
+      </div>
+      <div class="github_link">
+        <a :href="account_url" target="_blank">
+          <el-image style="margin: 4px" :src="github_logo" fit="cover">
+          </el-image
+        ></a>
+      </div>
+    </div>
+    <p class="footer">华南理工大学软件工程2020级毕业设计</p>
   </div>
 </template>
 
@@ -39,7 +63,11 @@ export default {
   components: {},
   data() {
     return {
-      logo_url: require("@/assets/img/logo.svg"),
+      logo_url: require("@/assets/img/vue.svg"),
+      wechat_logo: require("@/assets/img/wechat.svg"),
+      github_logo: require("@/assets/img/github.svg"),
+      official_img: require("@/assets/img/official.jpg"),
+      account_url: "https://github.com/John0702/vue-admin",
       form: {
         username: "",
         password: "",
@@ -49,15 +77,7 @@ export default {
         username: [
           { required: true, message: "请输入管理员账号", trigger: "blur" },
         ],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-          {
-            min: 6,
-            max: 20,
-            message: "长度在 6 到 20 个字符",
-            trigger: "blur",
-          },
-        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
     };
   },
@@ -118,7 +138,6 @@ export default {
   min-height: 500px;
   border-radius: 10px;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.7);
 }
 .logo_image {
   width: 100px;
@@ -136,7 +155,72 @@ export default {
 .el-button {
   width: 100%;
 }
-.el-form-item__content {
-  margin-left: 0px;
+.login >>> .el-form-item__content {
+  margin-left: 0px !important;
+}
+
+.wechat_logo {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 20px 20px 80px;
+  background-color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  animation: rightToleft 0.3s ease-in-out;
+}
+.github_link {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 20px 20px 40px;
+  background-color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  animation: rightToleft 0.5s ease-in-out;
+}
+.official_img {
+  position: absolute;
+  display: none;
+  right: 0;
+  bottom: 0;
+  margin: 20px 60px 20px;
+  background-color: white;
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+}
+.wechat_logo:hover,
+.github_link:hover {
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #999;
+}
+.wechat_logo:hover + .official_img {
+  display: block;
+  box-shadow: 0 0 10px #999;
+  animation: rightToleft 0.3s ease 1;
+}
+@keyframes rightToleft {
+  0% {
+    transform: translateX(7px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
 }
 </style>

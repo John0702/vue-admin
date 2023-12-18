@@ -15,7 +15,15 @@ const router = new Router({
       name: 'login',
       // 路由懒加载
       component: () => import('@/view/Login.vue')
-    }
+    },
+    {
+      path: '/home',
+      name: 'home',
+      component: () => import('@/view/Home.vue'),
+      meta: {
+        title: '首页'
+      },
+    },
   ]
 })
 
