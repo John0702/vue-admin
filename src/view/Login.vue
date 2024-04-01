@@ -1,30 +1,30 @@
 <template>
   <div class="login">
+    <!-- login_card -->
     <el-card class="login_card">
       <el-image class="logo_image" :src="logo_url" fit="cover"></el-image>
-      <p class="login_title">登录</p>
-      <p class="login_desc">欢迎登录Vue-admin后台管理系统</p>
+      <p class="login_desc">欢迎登录OB课程管理系统</p>
 
-      <el-form ref="ruleForm" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="ruleForm" :model="form" :rules="rules">
         <el-form-item prop="username">
           <el-input
-            v-model="form.username"
             placeholder="请输入管理员账号"
+            v-model="form.username"
             prefix-icon="el-icon-user"
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item prop="password">
           <el-input
             type="password"
+            placeholder="请输入管理员密码"
             v-model="form.password"
-            placeholder="请输入密码"
             prefix-icon="el-icon-lock"
-          ></el-input>
+          />
         </el-form-item>
         <el-form-item>
           <el-button
             :loading="loginLoading"
-            style="background: #75bde7; color: white"
+            style="background: linear-gradient(0.25turn,#4f7458,#455974); color: white;opacity: 0.95;"
             @click="submitForm('ruleForm')"
             >登录</el-button
           >
@@ -54,13 +54,12 @@
         ></a>
       </div>
     </div>
+    <!-- footer -->
     <p class="footer">华南理工大学软件工程2020级毕业设计</p>
   </div>
 </template>
-
 <script>
 export default {
-  components: {},
   data() {
     return {
       logo_url: require("@/assets/img/vue.svg"),
@@ -77,47 +76,57 @@ export default {
         username: [
           { required: true, message: "请输入管理员账号", trigger: "blur" },
         ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        password: [
+          { required: true, message: "请输入管理员密码", trigger: "blur" },
+        ],
       },
     };
   },
-  // created：在实例创建完成后被立即调用
-  created() {},
-  // mounted：在挂载开始之前被调用：相关的render函数首次被调用
-  mounted() {},
+  mounted(){
+    document.onkeydown = (e) => {
+      console.log(e);
+      if (e.key === 'Enter') {
+        this.enterLogin();
+      }
+    };
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.loginLoading = true;
-          this.$axios
-            .post("/auth/login", this.form)
-            .then((res) => {
-              if (res.data.success) {
-                sessionStorage.setItem("user", JSON.stringify(res.data.user));
-                sessionStorage.setItem("token", res.data.token);
-                this.$router.push({ path: "/home" });
-              } else {
-                this.$message.error(res.data.msg);
-                this.loginLoading = false;
-              }
-            })
-            .catch((err) => {
-              this.$message.error("服务器连接失败，请稍后重试......");
-              this.loginLoading = false;
-            });
+          // this.loginLoading = true;
+          // this.$axios
+          //   .post("/auth/login", this.form)
+          //   .then((res) => {
+          //     if (res.data.success) {
+          //       sessionStorage.setItem("user",JSON.stringify(res.data.data.user));
+          //       sessionStorage.setItem("token", res.data.token);
+          //       this.$router.push("/home");
+          //     } else {
+          //       this.$message.error(res.data.msg);
+          //       this.loginLoading = false;
+          //     }
+          //   })
+          //   .catch((err) => {
+          //     this.$message.error("服务器连接失败，请稍后重试......");
+          //     this.loginLoading = false;
+          //   });
+          this.$router.push("/home");
         } else {
           return false;
         }
       });
     },
+    enterLogin(){
+      this.submitForm('ruleForm');
+    }
   },
 };
 </script>
 
-<style scoped>
+<style  scoped>
 .login {
-  background-image: url(../assets/img/login.jpg);
+  background:linear-gradient(0.25turn,#3f6949, #3f5571);
   width: 100%;
   height: 100%;
   position: absolute;
@@ -134,8 +143,8 @@ export default {
   margin: auto;
   width: 20%;
   min-width: 300px;
-  height: 500px;
-  min-height: 500px;
+  height: 400px;
+  min-height: 400px;
   border-radius: 10px;
   text-align: center;
 }
@@ -144,26 +153,21 @@ export default {
   height: 50px;
   margin-top: 20px;
 }
-.login_title {
-  font-size: 25px;
-  font-weight: bold;
-}
 .login_desc {
   letter-spacing: 2px;
-  color: #999a9a;
+  font-weight: bold;
+  background-image: -webkit-linear-gradient(0.25turn, #3f6949, #3f5571);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .el-button {
   width: 100%;
 }
-.login >>> .el-form-item__content {
-  margin-left: 0px !important;
-}
-
 .wechat_logo {
   position: absolute;
   right: 0;
   bottom: 0;
-  margin: 20px 20px 80px;
+  margin: 20px 20px 60px;
   background-color: white;
   width: 30px;
   height: 30px;
@@ -174,7 +178,7 @@ export default {
   position: absolute;
   right: 0;
   bottom: 0;
-  margin: 20px 20px 40px;
+  margin: 20px 20px 20px;
   background-color: white;
   width: 30px;
   height: 30px;
@@ -222,5 +226,14 @@ export default {
   font-size: 12px;
   letter-spacing: 1px;
   margin-bottom: 10px;
+}
+.footer:hover {
+  color: white;
+}
+.login>>>.el-input__inner:focus{
+  border-color: #3f6949;
+}
+.login>>>.el-form-item.is-error .el-input__inner:focus{
+  border-color: #f56c6c;
 }
 </style>
