@@ -1,8 +1,8 @@
 {
-  "name": "vue-admin",
+  "name": "y",
   "version": "1.0.0",
-  "description": "A Vue.js project",
-  "author": "John <John0702@github.com>",
+  "description": "y",
+  "author": "y",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -10,9 +10,10 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "1.5.0",
-    "echarts": "^5.4.3",
-    "element-ui": "^2.15.14",
+    "axios": "^0.27.2",
+    "chokidar": "^2.1.8",
+    "echarts": "^5.3.3",
+    "element-ui": "^2.15.9",
     "font-awesome": "^4.7.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"

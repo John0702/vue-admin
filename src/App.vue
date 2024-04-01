@@ -1,18 +1,18 @@
-<template>
+<template >
   <div id="app">
     <!-- 路由占位符 -->
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
-}
+  name: "App",
+};
 </script>
 
-<style>
-body{
+<style scoped>
+body {
   background: #fff;
 }
 </style>
