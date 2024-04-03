@@ -24,8 +24,8 @@ Vue.prototype.$commonJs = commonJs
 Vue.prototype.$constant = constant
 
 // 设置接口请求的前缀地址
-axios.defaults.baseURL = '/zhifou-study'
-// 全局设置token 
+axios.defaults.baseURL = '/open-book'
+// 全局设置token
 axios.interceptors.request.use(function (config) {
   let token = sessionStorage.getItem('token')
   if (token) {

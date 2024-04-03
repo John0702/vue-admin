@@ -5,28 +5,62 @@
       <el-image class="logo_image" :src="logo_url" fit="cover"></el-image>
       <p class="login_desc">欢迎登录OB课程管理系统</p>
 
-      <el-form ref="ruleForm" :model="form" :rules="rules">
+      <el-form ref="ruleForm" :model="form" :rules="rules" >
         <el-form-item prop="username">
           <el-input
             placeholder="请输入管理员账号"
-            v-model="form.username"
+            v-model.trim="form.username"
             prefix-icon="el-icon-user"
           />
         </el-form-item>
         <el-form-item prop="password">
           <el-input
-            type="password"
+            show-password
             placeholder="请输入管理员密码"
-            v-model="form.password"
+            v-model.trim="form.password"
+            prefix-icon="el-icon-lock"
+          />
+        </el-form-item>
+        <el-form-item v-if="isReg" prop="passwordConfirm">
+          <el-input
+            v-model.trim="form.passwordConfirm"
+            show-password
+            placeholder="请再次输入管理员密码"
             prefix-icon="el-icon-lock"
           />
         </el-form-item>
         <el-form-item>
           <el-button
+            v-if="!isReg"
             :loading="loginLoading"
-            style="background: linear-gradient(0.25turn,#4f7458,#455974); color: white;opacity: 0.95;"
-            @click="submitForm('ruleForm')"
+            class="btn"
+            style="margin-bottom: 10px;"
+            @click="login('ruleForm')"
             >登录</el-button
+          >
+          <el-button
+            v-if="!isReg"
+            :loading="loginLoading"
+            style="margin-left: 0px;"
+            class="btn"
+            @click="changeReg"
+            >去注册</el-button
+          >
+          <el-button
+            v-if="isReg"
+            :loading="loginLoading"
+            class="btn"
+            style="margin-bottom: 10px;"
+            @click="registerAndLogin"
+            >注册并登陆</el-button
+          >
+          <el-button
+            v-if="isReg"
+            :loading="loginLoading"
+            class="btn"
+            style="margin-left: 0px;"
+            @click="changeReg"
+            >返回</el-button
           >
         </el-form-item>
       </el-form>
@@ -70,28 +104,59 @@ export default {
       form: {
         username: "",
         password: "",
+        passwordConfirm: "",
       },
       loginLoading: false,
+      isReg:false,
       rules: {
         username: [
-          { required: true, message: "请输入管理员账号", trigger: "blur" },
+          { required: true, message: "请输入用户名", trigger: "blur" },
         ],
         password: [
-          { required: true, message: "请输入管理员密码", trigger: "blur" },
+          { required: true, message: "请输入密码", trigger: "blur" },
+        ],
+        passwordConfirm: [
+          { required: true, message: "请再次输入密码", trigger: "blur" },
         ],
       },
     };
   },
   mounted(){
     document.onkeydown = (e) => {
-      console.log(e);
       if (e.key === 'Enter') {
         this.enterLogin();
       }
     };
   },
   methods: {
-    submitForm(formName) {
+    changeReg(){
+      this.$refs.ruleForm.resetFields();
+      this.isReg=!this.isReg;
+    },
+    registerAndLogin(){
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          if(this.form.password!==this.form.passwordConfirm){
+            this.$message.error("两次密码输入不一致");
+            this.$refs.ruleForm.resetFields();
+            return;
+          }
+          if(localStorage.getItem(this.form.username)!==null){
+            this.$message.error("用户已注册，请直接登录");
+            this.$refs.ruleForm.resetFields();
+            return;
+          }
+          localStorage.setItem(this.form.username,this.form.password);
+          this.$message.success("注册成功，正在前往首页。。。");
+          setTimeout(()=>{
+            this.$router.push('/home');
+          },1500);
+        } else {
+          return false;
+        }
+      });
+    },
+    login(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // this.loginLoading = true;
@@ -111,14 +176,29 @@ export default {
           //     this.$message.error("服务器连接失败，请稍后重试......");
           //     this.loginLoading = false;
           //   });
-          this.$router.push("/home");
+          const model=this.$refs[formName].model;
+          const {username,password}=model;
+          if(localStorage.getItem(username)===null){
+            this.$message.error("用户尚未注册，请先注册");
+            this.$refs[formName].resetFields();
+            return;
+          }
+          if(localStorage.getItem(username)===password){
+            this.$message.success("登录成功，正在前往首页。。。");
+            localStorage.setItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD",username);//设置当前用户，防止用户使用此名字注册
+            setTimeout(()=>{
+              this.$router.push('/home');
+            },1500);
+          }else{
+            this.$message.error("用户名或密码错误");
+          }
         } else {
           return false;
         }
       });
     },
     enterLogin(){
-      this.submitForm('ruleForm');
+      this.login('ruleForm');
     }
   },
 };
@@ -143,14 +223,16 @@ export default {
   margin: auto;
   width: 20%;
   min-width: 300px;
-  height: 400px;
-  min-height: 400px;
+  height: 420px;
+  min-height: 420px;
   border-radius: 10px;
   text-align: center;
+  box-shadow: 10px 10px 5px #4e8186
+
 }
 .logo_image {
   width: 100px;
-  height: 50px;
+  height: 20px;
   margin-top: 20px;
 }
 .login_desc {
@@ -235,5 +317,13 @@ export default {
 }
 .login>>>.el-form-item.is-error .el-input__inner:focus{
   border-color: #f56c6c;
+}
+.el-form-item.is-required{
+  margin-bottom: 18px;
+}
+.btn{
+  background: linear-gradient(0.25turn,#4f7458,#455974);
+  color: white;
+  opacity: 0.95;
 }
 </style>
