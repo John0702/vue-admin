@@ -15,4 +15,5 @@ export default {
 body {
   background: #fff;
 }
+
 </style>

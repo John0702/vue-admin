@@ -18,3 +18,7 @@
 .content {
   margin: 20px 0px;
 }
+
+.my-pagination-ctr .el-select-dropdown__item.selected{
+  color: #3f6949;
+}

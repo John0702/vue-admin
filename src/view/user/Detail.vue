@@ -103,7 +103,7 @@ export default {
 
 <style scoped>
 .basic-info {
-  border-left: 5px solid #2661ef;
+  border-left: 5px solid #4f7458;
   padding-left: 10px;
   font-weight: bold;
 }
@@ -112,5 +112,10 @@ export default {
 }
 .el-tag {
   margin-left: 5px;
+}
+.el-button.el-button--default.el-button--small:hover{
+  color: #4f7458;
+  border-color: #4f7458;
+  background-color: #dcf5e1;
 }
 </style>

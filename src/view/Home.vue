@@ -13,7 +13,7 @@
                 class="el-dropdown-link"
                 style="color: #fff; cursor: pointer"
               >
-                Open-Book &nbsp;&nbsp;<i class="fa fa-caret-down fa-1x"></i>
+                {{currentUser}} &nbsp;&nbsp;<i class="fa fa-caret-down fa-1x"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="editPasswordDialog = true"
@@ -150,6 +150,7 @@ export default {
         newPassword: "",
         confirmPassword: "",
       },
+      currentUser: "",
       editPasswordRule: {
         oldPassword: [
           { required: true, message: "请输入原密码", trigger: "blur" },
@@ -167,6 +168,7 @@ export default {
     this.activePath = sessionStorage.getItem("activePath")
       ? sessionStorage.getItem("activePath")
       : "/index";
+    this.currentUser = localStorage.getItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD");
   },
   methods: {
     // 保存链接的激活状态
