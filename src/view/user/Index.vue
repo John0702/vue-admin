@@ -78,7 +78,7 @@
             >
             <el-button
               size="small"
-              @click="$commonJs.changeView('/user/detail')"
+              @click="$router.push('/user/detail')"
               >详情</el-button
             >
           </template>
@@ -231,7 +231,7 @@ export default {
 }
 .el-button.el-button--default.el-button--small:hover{
   color: #4f7458;
-  border-color: #4f7458;
+  border-color: #dcf5e1;
   background-color: #dcf5e1;
 }
 .number.active{

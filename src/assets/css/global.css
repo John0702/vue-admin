@@ -22,3 +22,24 @@
 .my-pagination-ctr .el-select-dropdown__item.selected{
   color: #3f6949;
 }
+.el-button.el-button--default.el-button--small:hover{
+  color: #4f7458;
+  background-color: #dcf5e1;
+  border-color: #dcf5e1;
+}
+.el-button.el-button--default.el-button--small.el-button--primary{
+  color: #fff;
+  background-color: #4f7458;
+  border-color: #3f6949;
+}
+.el-button.el-button--default.el-button--small.el-button--primary:hover{
+  background-color: #3f6949;
+}
+.el-message-box__headerbtn:focus .el-message-box__close, .el-message-box__headerbtn:hover .el-message-box__close{
+  color: #4f7458 !important;
+}
+.el-button:focus{
+  color: #4f7458 !important;
+  background-color: #dcf5e1 !important;
+  border-color: #3f6949 !important;
+}

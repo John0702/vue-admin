@@ -55,12 +55,16 @@
             <el-form-item label="新密码:" prop="newPassword">
               <el-input
                 v-model="editPasswordForm.newPassword"
+                type="password"
+                show-password
                 placeholder="请输入新密码"
               />
             </el-form-item>
             <el-form-item label="确认密码:" prop="confirmPassword">
               <el-input
                 v-model="editPasswordForm.confirmPassword"
+                type="password"
+                show-password
                 placeholder="请确认密码"
               />
             </el-form-item>
@@ -181,19 +185,29 @@ export default {
       this.$refs.editPasswordForm.validate(async (valid) => {
         if (!valid) return;
         if (this.editPasswordForm.newPassword != this.editPasswordForm.confirmPassword) {
-          return this.$message.error("两次密码不正确，请重新输入！");
+          return this.$message.error("两次密码不一致，请重新输入！");
         }
         // 请求接口
-        const { data: res } = await this.$axios.post(
-          "/user/updatePasswordword",
-          this.editPasswordForm
-        );
-        if (res.success) {
+        // const { data: res } = await this.$axios.post(
+        //   "/user/updatePasswordword",
+        //   this.editPasswordForm
+        // );
+        // if (res.success) {
+        //   this.$message.success("密码修改成功，请重新登录！");
+        //   sessionStorage.clear();
+        //   this.$router.push("/login");
+        // } else {
+        //   return this.$message.error(res.msg);
+        // }
+        if(this.editPasswordForm.oldPassword===localStorage.getItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD")){
+          localStorage.setItem(localStorage.getItem('NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD'),this.editPasswordForm.newPassword);
           this.$message.success("密码修改成功，请重新登录！");
           sessionStorage.clear();
-          this.$router.push("/login");
-        } else {
-          return this.$message.error(res.msg);
+          setTimeout(()=>{
+            this.$router.push("/login");
+          },1500);
+        }else{
+          return this.$message.error("原密码错误，请重新输入！");
         }
       });
     },
@@ -312,5 +326,14 @@ export default {
 .el-menu-item{
   height: 50px;
   line-height: 50px;
+}
+.el-button--default:hover{
+  color: #4f7458;
+  border-color: #4f7458;
+  background-color: #dcf5e1;
+}
+.el-button--primary{
+  background-color: #3f6949;
+  border-color: #3f6949;
 }
 </style>

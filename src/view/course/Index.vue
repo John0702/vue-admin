@@ -301,4 +301,32 @@ export default {
 .el-table {
   margin: 20px 0px;
 }
+.el-button--primary{
+  background: linear-gradient(0.25turn,#4f7458,#455974);
+  color: white;
+  border-color: #4f7458;
+  opacity: 0.95;
+}
+.el-radio-button.el-radio-button--small.is-active>>>.el-radio-button__inner{
+  background: linear-gradient(0.25turn,#4f7458,#455974);
+  color: white;
+  border-color: #4f7458;
+  opacity: 0.95;
+  box-shadow: none;
+}
+.el-radio-button--small>>>.el-radio-button__inner:hover{
+  color: #4f7458;
+  background-color: #dcf5e1;
+}
+.el-button.el-button--default.el-button--small:hover{
+  color: #4f7458;
+  border-color: #dcf5e1;
+  background-color: #dcf5e1;
+}
+.el-button.el-button--success.el-button--small{
+  background: #4f7458;
+  color: white;
+  border-color: #4f7458;
+  opacity: 0.95;
+}
 </style>
