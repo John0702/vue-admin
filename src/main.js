@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import './mock/mock'
 import './assets/css/global.css'
 // 导入 ElementUI
 import ElementUI from 'element-ui';
