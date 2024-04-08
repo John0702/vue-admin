@@ -209,8 +209,7 @@ export default {
     // 切换tab
     changeRadio(value) {
       this.searchForm.state = value;
-      // this.getPageList();
-      console.log(value);
+      // 简单过滤
       this.courseData = JSON.parse(localStorage.getItem("courseData")).filter(
         (item) => {
           if (value == "") {
