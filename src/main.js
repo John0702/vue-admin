@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import './mock/mock'
 import './assets/css/global.css'
 // 导入 ElementUI
 import ElementUI from 'element-ui';
@@ -12,6 +11,8 @@ import 'font-awesome/css/font-awesome.min.css'
 import * as echarts from 'echarts'
 // 引入 axios
 import axios from 'axios'
+// 引入 mock
+import './mock/mock'
 // 将 axios 挂载到 Vue 上
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false

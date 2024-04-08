@@ -38,8 +38,6 @@
 .el-message-box__headerbtn:focus .el-message-box__close, .el-message-box__headerbtn:hover .el-message-box__close{
   color: #4f7458 !important;
 }
-.el-button:focus{
+.el-cascader-node.in-active-path, .el-cascader-node.is-active, .el-cascader-node.is-selectable.in-checked-path{
   color: #4f7458 !important;
-  background-color: #dcf5e1 !important;
-  border-color: #3f6949 !important;
 }

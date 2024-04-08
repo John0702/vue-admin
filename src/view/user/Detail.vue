@@ -6,6 +6,12 @@
         <el-button style="float: right" size="small" @click="$router.go(-1)">
           返回</el-button
         >
+        <el-button
+          style="float: right;margin-right: 10px"
+          size="small"
+          type="primary"
+          @click="$router.push(`/user/edit?id=${userInfo.id}`)"
+          >编辑</el-button>
       </div>
       <el-divider></el-divider>
       <div style="text-align: center">
@@ -13,7 +19,7 @@
           :size="150"
           :src="require('../../assets/img/open-book.svg')"
         ></el-avatar>
-        <h2 style="margin: 10px 0px">{{ userInfo.name ? "" : "唐三" }}</h2>
+        <h2 style="margin: 10px 0px">{{ userInfo.name ? userInfo.name : "空" }}</h2>
         <span
           style="
             border-right: 2px solid #d2d2d2;
@@ -27,7 +33,7 @@
           {{ userInfo.courseOrder ? userInfo.courseOrder : "2" }}</span
         >
         <p style="margin-top: 10px">
-          <el-tag size="small" style="background: #d9f6ee; color: #3dd4a7">
+          <el-tag size="small" :style="{background: userInfo.state?'rgb(255 181 181)':'#dcf5e1', color: userInfo.state?'#ff0000':'#4f7458',borderColor:userInfo.state?'rgb(255 204 204)':'dcf5e1'}">
             <i class="fa fa-circle"></i>
             {{ userInfo.status ? userInfo.status : "正常" }}</el-tag
           >
@@ -40,15 +46,15 @@
       <el-descriptions class="margin-top" :column="3">
         <el-descriptions-item>
           <template slot="label"> 姓名 </template>
-          {{ userInfo.name ? userInfo.name : "唐三" }}
+          {{ userInfo.name ? userInfo.name : "无" }}
         </el-descriptions-item>
         <el-descriptions-item>
-          <template slot="label"> 昵称 </template>
-          {{ userInfo.nickName ? userInfo.nickName : "斗罗大陆唐三" }}
+          <template slot="label"> 英文名 </template>
+          {{ userInfo.EnglishName ? userInfo.EnglishName : "none" }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 手机号 </template>
-          {{ userInfo.mobile ? userInfo.mobile : 15736701918 }}
+          {{ userInfo.phone ? userInfo.phone : 'empty' }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 性别 </template>
@@ -60,13 +66,15 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 联系地址 </template>
-          {{ userInfo.address ? userInfo.address : '知否科学大道' }}
+          {{ userInfo.address ? userInfo.address : '华南理工大学' }}
         </el-descriptions-item>
         <el-descriptions-item>
-          <template slot="label"> 标签 </template>
-          <el-tag size="mini" type="primary">java开发</el-tag>
-          <el-tag size="mini" type="success">摄影</el-tag>
-          <el-tag size="mini" type="danger">考研</el-tag>
+          <template slot="label"> 擅长语言 </template>
+          <el-tag size="mini" type="primary">{{ userInfo.tag }}</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label"> 身份 </template>
+          <el-tag size="mini" :type="userInfo.permission=='admin'?'danger':'primary'">{{ userInfo.permission=='admin'?'管理员':'普通用户' }}</el-tag>
         </el-descriptions-item>
       </el-descriptions>
     </el-card>
@@ -82,17 +90,13 @@ export default {
       },
     };
   },
-  created() {},
+  created() {
+    this.userInfo.id = this.$route.query.id;
+    this.getUserDetail();
+  },
   methods: {
-    async getUserDetail() {
-      const result = await this.$axios.get("/user/detail", {
-        params: { id: this.userInfo.id },
-      });
-      if (result.data.success) {
-        Object.assign(this.userInfo, result.data.data);
-      } else {
-        this.$message.error(result.data.message);
-      }
+    getUserDetail() {
+      this.userInfo=JSON.parse(localStorage.getItem('tableData')).find(item=>item.id==this.userInfo.id);
     },
     handleClose() {
       this.drawer = false;
@@ -117,5 +121,10 @@ export default {
   color: #4f7458;
   border-color: #4f7458;
   background-color: #dcf5e1;
+}
+.el-button.el-button--primary.el-button--small{
+  color: white;
+  border-color: #3f6949;
+  background-color: #3f6949;
 }
 </style>

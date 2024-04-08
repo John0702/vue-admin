@@ -46,6 +46,13 @@ const router = new Router({
           component: () => import('@/view/user/Detail.vue'),
         },
         {
+          path:'/user/edit',
+          meta:{
+            title:'用户信息编辑'
+          },
+          component:()=>import('@/view/user/Edit.vue')
+        },
+        {
           path: '/course/list',
           meta: {
             title: '课程管理'
@@ -73,6 +80,20 @@ const router = new Router({
           },
           component: () => import('@/view/course/Detail.vue'),
         },
+        {
+          path:'/article/list',
+          meta:{
+            title:'文章管理'
+          },
+          component:()=>import('@/view/article/Index.vue')
+        },
+        {
+          path:'/order/list',
+          meta:{
+            title:'订单管理'
+          },
+          component:()=>import('@/view/order/Index.vue')
+        }
       ]
     },
   ]

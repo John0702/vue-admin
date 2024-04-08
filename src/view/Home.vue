@@ -93,13 +93,6 @@
               <i class="el-icon-house"></i>
               <span slot="title">首页</span>
             </el-menu-item>
-            <el-submenu index="1">
-              <template slot="title">
-                <i class="el-icon-setting"></i>
-                <span>系统设置</span>
-              </template>
-              <el-menu-item index="1-4-1">权限管理</el-menu-item>
-            </el-submenu>
             <el-menu-item
               index="/user/list"
               @click="saveActiveNav('/user/list')"
@@ -107,7 +100,10 @@
               <i class="el-icon-user"></i>
               <span slot="title">用户管理</span>
             </el-menu-item>
-            <el-menu-item index="4">
+            <el-menu-item
+              index="/order/list"
+              @click="saveActiveNav('/order/list')"
+            >
               <i class="el-icon-tickets"></i>
               <span slot="title">订单管理</span>
             </el-menu-item>
@@ -116,9 +112,12 @@
               @click="saveActiveNav('/course/list')"
             >
               <i class="el-icon-notebook-1"></i>
-              <span slot="title"> 课程管理</span>
+              <span slot="title">课程管理</span>
             </el-menu-item>
-            <el-menu-item index="4">
+            <el-menu-item
+              index="/article/list"
+              @click="saveActiveNav('/article/list')"
+            >
               <i class="el-icon-reading"></i>
               <span slot="title">文章管理</span>
             </el-menu-item>
@@ -282,7 +281,7 @@ export default {
 }
 
 .toggle-button {
-  background-color: #d9e0e7;
+  background-color: #dcf5e1;
   font-size: 20px;
   line-height: 24px;
   text-align: center;

@@ -4,22 +4,22 @@
     <div class="main-info">
       <el-card class="info">
         <el-button type="primary" icon="el-icon-user-solid" circle />
-        <h2 class="num-info">112356</h2>
+        <h2 class="num-info">{{ initData.totalUser }}</h2>
         <p class="desc">总用户数</p>
       </el-card>
       <el-card class="info">
         <el-button type="success" icon="el-icon-s-data" circle />
-        <h2 class="num-info">66789</h2>
+        <h2 class="num-info">{{ initData.totalCourse }}</h2>
         <p class="desc">总课程数</p>
       </el-card>
       <el-card class="info">
         <el-button type="danger" icon="el-icon-coin" circle />
-        <h2 class="num-info">12457</h2>
+        <h2 class="num-info">{{ initData.totalOrder }}</h2>
         <p class="desc">总订单数</p>
       </el-card>
       <el-card class="info">
         <el-button type="warning" icon="el-icon-data-line" circle />
-        <h2 class="num-info">998989.12</h2>
+        <h2 class="num-info">{{ initData.totalIncome }}</h2>
         <p class="desc">总收入</p>
       </el-card>
     </div>
@@ -35,17 +35,22 @@
 export default {
   data() {
     return {
-      // initData: {},
+      initData: {
+        totalUser: 0,
+        totalCourse: 0,
+        totalOrder: 0,
+        totalIncome: 0,
+      },
     };
   },
   created() {
-    this.initData();
+    this.getInitData();
   },
   methods: {
     // 初始化数据
-    async initData() {
+    async getInitData() {
       const result = await this.$axios.get("/manage/init");
-      if (result.data.success) {
+      if (result.data.code===200) {
         Object.assign(this.initData, result.data.data);
       } else {
         this.$message.error(result.data.message);
@@ -61,12 +66,12 @@ export default {
         },
         xAxis: {
           data: [
-            "spring源码",
-            "redis进阶",
+            "docker实战",
+            "SpringBoot",
             "vue3源码",
             "k8s全能",
-            "大屏方案",
-            "全栈开发",
+            "React全栈",
+            "SSR渲染",
           ],
         },
         yAxis: {},
