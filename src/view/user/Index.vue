@@ -56,19 +56,14 @@
       </el-row>
       <!-- 表格 -->
       <el-table ref="table" :data="tableData" border>
-        <el-table-column type="index" label="序号" width="50" />
+        <el-table-column type="index" label="序号" width="50"/>
         <el-table-column prop="name" label="姓名" show-overflow-tooltip />
         <el-table-column prop="sex" label="性别" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <div>
-              {{ scope.row.sex == 0 ? "女" : "男" }}
-            </div>
-          </template>
         </el-table-column>
-        <el-table-column prop="nickname" label="昵称" show-overflow-tooltip />
-        <el-table-column prop="mobile" label="手机号" show-overflow-tooltip />
-        <el-table-column prop="stateName" label="状态" show-overflow-tooltip />
-        <el-table-column label="操作" width="330">
+        <el-table-column prop="EnglishName" label="英文名" show-overflow-tooltip />
+        <el-table-column prop="phone" label="手机号" show-overflow-tooltip width="150"/>
+        <el-table-column prop="status" label="状态" show-overflow-tooltip />
+        <el-table-column label="操作" width="250">
           <template slot-scope="scope">
             <el-button
               type="danger"
@@ -78,9 +73,14 @@
             >
             <el-button
               size="small"
-              @click="$router.push('/user/detail')"
+              @click="$router.push(`/user/detail?id=${scope.row.id}`)"
               >详情</el-button
             >
+            <el-button
+              type="primary"
+              size="small"
+              @click="$router.push(`/user/edit?id=${scope.row.id}`)"
+              >编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -111,30 +111,37 @@ export default {
         sex: "",
         state: "",
       },
-      total: 1, // 初始化应为 0，这里只做演示效果使用
+      total: 0,
       tableData: [
         {
-          name: "唐三",
-          sex: 1,
-          nickname: "斗罗大陆唐三",
-          mobile: "19999999999",
+          name: "",
+          sex: "",
+          EnglishName: "",
+          phone: 0,
           state: 0,
-          stateName: "正常",
+          status: "",
         },
       ],
     };
   },
   created() {
-    this.getPageList();
+    if(!localStorage.getItem('tableData')){
+      this.getPageList();
+    }
+    this.tableData = JSON.parse(localStorage.getItem("tableData"));
+    this.total = this.tableData.length;
   },
   methods: {
     async getPageList() {
-      const result = await this.$axios.get(url, {
-        params: this.searchForm,
-      });
-      if (result.data.success) {
+      const result = await this.$axios.get("manage/userList");
+      if (result.data.code===200) {
         this.tableData = result.data.data.records;
+        this.tableData.forEach((item) => {
+          item.status = item.state ? "已注销" : "正常";
+        });
+        console.log(this.tableData);
         this.total = result.data.data.total;
+        localStorage.setItem("tableData", JSON.stringify(this.tableData));
       } else {
         this.$message.error(result.data.message);
       }
@@ -167,6 +174,7 @@ export default {
     },
     // 删除
     deleteUser(id) {
+      console.log(id);
       this.$confirm("确认要删除该用户吗, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -175,11 +183,16 @@ export default {
         .then(() => {
           // 删除逻辑
           this.$axios
-            .delete(url, {
+            .delete("manage/deleteUser", /*{
               params: { id: id },
-            })
+            }*/)
             .then((res) => {
-              if (res.data.success) {
+              if (res.data.code === 200) {
+                let tableData = JSON.parse(localStorage.getItem("tableData"));
+                tableData = tableData.filter(item => item.id !== id);
+                localStorage.setItem("tableData", JSON.stringify(tableData));
+                this.tableData = tableData;
+                this.total = this.total - 1;
                 this.$message({ message: "删除成功！", type: "success" });
               } else {
                 this.$message.error(res.data.message);
@@ -200,6 +213,14 @@ export default {
     //     query: queryParams,
     //   });
     // },
+  },
+  watch: {
+    tableData: {
+      handler: function (newVal) {
+        localStorage.setItem("tableData", JSON.stringify(newVal));
+      },
+      deep: true,
+    },
   },
 };
 </script>
@@ -243,8 +264,18 @@ export default {
 .content>>>.el-input__inner:hover{
   border-color: #3f6949;
 }
-.pagination.el-pagination>>>.el-pager li.active{
+.pagination.el-pagination>>>.el-pager li.active,
+.pagination.el-pagination>>>.el-pager li:hover{
   color: #3f6949;
+}
+.pagination.el-pagination>>>.btn-prev:hover,
+.pagination.el-pagination>>>.btn-next:hover{
+  color: #3f6949;
+}
+.content>>>.el-button.el-button--default.el-button--small:focus{
+  color: #4f7458;
+  border-color: #dcf5e1;
+  background-color: #dcf5e1;
 }
 </style>
 

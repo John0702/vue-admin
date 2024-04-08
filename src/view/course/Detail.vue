@@ -41,7 +41,7 @@
       <!-- 课程封面 -->
       <div style="width: 96%; margin: 0px auto">
         <el-image
-          :src="require('../../assets/img/courseurl.jpg')"
+          :src="require('../../assets/img/courseurl.jpeg')"
           fit="contain"
         />
       </div>

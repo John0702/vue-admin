@@ -1,9 +1,10 @@
 <template>
   <div>
     <el-upload
+      action=""
       ref="importUpload"
       class="import-upload"
-      limit="1"
+      :limit="1"
       accept=".png, .jpeg, .jpg "
       :file-list="uploadFileList"
       :before-remove="uploadFileBeforeRemove"
@@ -20,7 +21,7 @@
     </el-upload>
   </div>
 </template>
-  
+
   <script>
 export default {
   name: "upload",
@@ -32,7 +33,7 @@ export default {
   },
   created() {
     if (this.uploadList) {
-      this.uploadFileList = this.uploadList;
+      this.uploadFileList.push(...[this.uploadList]);
     }
   },
   methods: {
@@ -107,7 +108,9 @@ export default {
         }
       }
     },
+    uploadFileHandleChange(){
+
+    }
   },
 };
 </script>
-  

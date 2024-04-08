@@ -62,6 +62,8 @@
 
 <script>
 import Upload from "../../components/Upload.vue";
+const Mock = require("mockjs");
+const Random = Mock.Random;
 export default {
   components: { Upload },
   data() {
@@ -71,46 +73,46 @@ export default {
         name: "",
         code: "",
         lecturer: "",
-        category: "",
+        category: [],
         price: "",
         desc: "",
-        courseUrl: "",
+        courseUrl: require("./../../assets/img/courseUrl.jpeg"),
       },
       categoryList: [
         {
-          value: "1001",
+          value: "1",
           label: "前端",
           children: [
-            { value: "100101", label: "html5" },
-            { value: "100102", label: "vue" },
-            { value: "100103", label: "node" },
-            { value: "100104", label: "react" },
-            { value: "100105", label: "javascript" },
+            { value: "1-1", label: "html5" },
+            { value: "1-2", label: "vue" },
+            { value: "1-3", label: "node" },
+            { value: "1-4", label: "react" },
+            { value: "1-5", label: "javascript" },
           ],
         },
         {
-          value: "1002",
+          value: "2",
           label: "后端",
           children: [
-            { value: "100201", label: "springboot" },
-            { value: "100202", label: "微服务" },
-            { value: "100203", label: "Redis" },
+            { value: "2-1", label: "springboot" },
+            { value: "2-2", label: "微服务" },
+            { value: "2-3", label: "Redis" },
           ],
         },
         {
-          value: "1003",
+          value: "3",
           label: "移动端",
           children: [
-            { value: "100301", label: "iOS" },
-            { value: "100302", label: "Android" },
-            { value: "100303", label: "Flutter" },
+            { value: "3-1", label: "iOS" },
+            { value: "3-2", label: "Android" },
+            { value: "3-3", label: "Flutter" },
           ],
         },
       ],
       lecturerList: [
         { id: 123123, name: "尤雨溪" },
-        { id: 123124, name: "Open-Book" },
-        { id: 123125, name: "工藤新一" },
+        { id: 123124, name: "OB最强讲师" },
+        { id: 123125, name: "J神讲JS" },
       ],
       cascaderProps:{
         value:'id',
@@ -150,40 +152,58 @@ export default {
     };
   },
   created() {
-    this.getCourseCategory();
+    // this.getCourseCategory();
     if (this.$route.query.id) {
-      this.getCourseDetail();
+      this.getCourseDetail(this.$route.query.id);
     }
   },
   methods: {
     // 获取课程详情
-    async getCourseDetail() {
-      const { data: res } = await this.$axios.get('/course/detail', { params: { id: id } });
-      if (res.success) {
-        Object.assign(this.form, res.data);
-      }
+    getCourseDetail(id) {
+      const data=JSON.parse(localStorage.getItem('courseData')).find(item=>item.id==id);
+      this.form = data;
+      console.log(this.form);
     },
-    async getCourseCategory() {
-      const result = await this.$axios.get("/course/getCategory");
-      if (result.data.success) {
-       this.categoryList = result.data.data;
-      } else {
-        this.$message.error(result.data.message);
-      }
-    },
+    // async getCourseCategory() {
+    //   const result = await this.$axios.get("/course/getCategory");
+    //   if (result.data.success) {
+    //    this.categoryList = result.data.data;
+    //   } else {
+    //     this.$message.error(result.data.message);
+    //   }
+    // },
     // 新增/编辑课程内容
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let url = this.form.id ? "/course/update" : "/course/save";
-          this.$axios.post(url, this.form).then((res) => {
-            if (res.data.success) {
-              this.$message.success("保存成功！");
-              this.$router.go(-1);
-            } else {
-              this.$message.error(res.data.msg);
+          let type=this.$route.query.id?'edit':'add';
+          // 新增
+          if(type=='add'){
+            this.form.id = new Date().getTime();
+            this.form.code = Random.string("number", 8);
+            this.form.state = 0;
+            this.form.lecturer = this.lecturerList.find(item=>item.id==this.form.lecturer).name;
+            if(this.form.courseUrl){
+              this.form.courseUrl = this.form.courseUrl.map(item=>item.url);
             }
-          });
+            let newData = this.form;
+            console.log(newData);
+            localStorage.setItem('courseData',JSON.stringify([newData,...JSON.parse(localStorage.getItem('courseData'))]));
+            this.$message.success("新增成功");
+            this.$router.back();
+          }else{
+            // 编辑
+            let newData = JSON.parse(localStorage.getItem('courseData')).map(item=>{
+              if(item.id==this.form.id){
+                return this.form;
+              }else{
+                return item;
+              }
+            });
+            localStorage.setItem('courseData',JSON.stringify(newData));
+            this.$message.success("编辑成功");
+            this.$router.back();
+          }
         } else {
           return false;
         }
@@ -205,6 +225,10 @@ export default {
         fileIds.splice(index, 1);
       }
     },
+    handleChange(value) {
+      console.log(value);
+      console.log(this.form.category);
+    },
   },
 };
 </script>
@@ -214,4 +238,30 @@ export default {
 .el-select {
   width: 440px;
 }
-</style>``
+.content>>>.el-input__inner:focus{
+  border-color: #4f7458;
+}
+.content>>>.el-textarea__inner:focus{
+  border-color: #4f7458;
+}
+.el-button--primary{
+  background-color: #4f7458;
+  border-color: #4f7458;
+}
+.el-button.el-button--default:hover{
+  color: #4f7458;
+  border-color: #dcf5e1;
+  background-color: #dcf5e1;
+}
+.content>>>.el-cascader .el-input.is-focus .el-input__inner{
+  border-color: #4f7458;
+}
+.content>>>.el-input-number__decrease:hover,
+.content>>>.el-input-number__increase:hover{
+  color: #4f7458;
+}
+.content>>>.el-input-number__decrease:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled),
+.content>>>.el-input-number__increase:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled){
+  border-color: #4f7458;
+}
+</style>
