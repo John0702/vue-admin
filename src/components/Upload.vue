@@ -108,8 +108,8 @@ export default {
         }
       }
     },
-    uploadFileHandleChange(){
-
+    uploadFileHandleChange(arg){
+      console.log(arg)
     }
   },
 };

@@ -16,7 +16,7 @@
               :src="require('../../assets/img/open-book.svg')"
             ></el-avatar>
           </el-col>
-          <el-col :span="18">
+          <el-col :span="16">
             <h3>
               <!-- {{ formData.lecturer ? formData.lecturer : "Open-Book" }} -->
               {{$constant.officialAccount}}
@@ -33,7 +33,7 @@
               }}
             </p>
             <p class="lecturer_desc">
-              {{ formData.fans ? formData.fans : 666888 }} 粉丝
+              {{ formData.fans ? formData.fans : 20010702 }} 粉丝
             </p>
           </el-col>
         </el-row>
@@ -48,8 +48,9 @@
       <!-- 课程介绍 -->
       <el-card class="course_info">
         <p>
-          本课程从基础的 Vue
-          源码构建开始讲起，包括数据驱动，响应式原理，让大家深入全面理解Vue的实现原理，掌握源码分析技巧，牢固对Vue的使用。
+          {{ formData.courseDesc
+            ? formData.courseDesc
+            : "课程简介：本课程是一门面向初学者的课程，主要讲解Vue.js的基础知识。" }}
         </p>
       </el-card>
     </el-drawer>
@@ -65,20 +66,22 @@ export default {
         id: "",
         lecturer: "",
         lecturerDesc: "",
+        courseDesc: "",
+        state: "",
         fans: "",
       },
     };
   },
+  created(){
+    // console.log(this.formData);
+  },
   methods: {
-    async getCourseDetail() {
-      const result = await this.$axios.get("/course/detail", {
-        params: { id: this.formData.id },
-      });
-      if (result.data.success) {
-        Object.assign(this.formData, result.data.data);
-      } else {
-        this.$message.error(result.data.message);
-      }
+    getCourseDetail() {
+      const det=JSON.parse(localStorage.getItem("courseData")).find(
+        (item) => item.id === this.formData.id
+      );
+      this.formData = { lecturer, lecturerDesc, courseDesc, id, state }=det;
+
     },
     handleClose() {
       this.drawer = false;

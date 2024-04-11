@@ -11,7 +11,6 @@
             style="width: 440px"
             v-model="form.category"
             :options="categoryList"
-            @change="handleChange"
           ></el-cascader>
         </el-form-item>
         <el-form-item label="课程售价:">
@@ -24,7 +23,7 @@
           ></el-input-number>
         </el-form-item>
         <el-form-item label="课程讲师:" prop="lecturer">
-          <el-select v-model="form.lecturer" placeholder="请选择讲师">
+          <el-select v-model="form.lecturer.name" @change="handleLecChange" placeholder="请选择讲师">
             <el-option
               v-for="item in lecturerList"
               :key="item.id"
@@ -62,6 +61,7 @@
 
 <script>
 import Upload from "../../components/Upload.vue";
+const defaultUrl = require("../../assets/img/defaultUrl.jpeg");
 const Mock = require("mockjs");
 const Random = Mock.Random;
 export default {
@@ -72,11 +72,14 @@ export default {
         id: "",
         name: "",
         code: "",
-        lecturer: "",
+        lecturer: {
+          id: "",
+          name: "",
+        },
         category: [],
         price: "",
         desc: "",
-        courseUrl: require("./../../assets/img/courseUrl.jpeg"),
+        courseUrl: defaultUrl,
       },
       categoryList: [
         {
@@ -156,6 +159,7 @@ export default {
     if (this.$route.query.id) {
       this.getCourseDetail(this.$route.query.id);
     }
+    console.log(this.form);
   },
   methods: {
     // 获取课程详情
@@ -164,14 +168,6 @@ export default {
       this.form = data;
       console.log(this.form);
     },
-    // async getCourseCategory() {
-    //   const result = await this.$axios.get("/course/getCategory");
-    //   if (result.data.success) {
-    //    this.categoryList = result.data.data;
-    //   } else {
-    //     this.$message.error(result.data.message);
-    //   }
-    // },
     // 新增/编辑课程内容
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
@@ -181,13 +177,10 @@ export default {
           if(type=='add'){
             this.form.id = new Date().getTime();
             this.form.code = Random.string("number", 8);
-            this.form.state = 0;
-            this.form.lecturer = this.lecturerList.find(item=>item.id==this.form.lecturer).name;
-            if(this.form.courseUrl){
-              this.form.courseUrl = this.form.courseUrl.map(item=>item.url);
-            }
+            this.form.state = 1;
+            this.form.stateName = "未上架";
             let newData = this.form;
-            console.log(newData);
+            console.log(newData,'newData');
             localStorage.setItem('courseData',JSON.stringify([newData,...JSON.parse(localStorage.getItem('courseData'))]));
             this.$message.success("新增成功");
             this.$router.back();
@@ -225,9 +218,8 @@ export default {
         fileIds.splice(index, 1);
       }
     },
-    handleChange(value) {
-      console.log(value);
-      console.log(this.form.category);
+    handleLecChange(value) {
+      this.form.lecturer = this.lecturerList.find(item=>item.id==value);
     },
   },
 };
