@@ -139,6 +139,7 @@
 
 <script>
 import Breadcrumb from "../components/Breadcrumb.vue";
+
 export default {
   components: { Breadcrumb },
   data() {
@@ -173,6 +174,12 @@ export default {
       : "/index";
     this.currentUser = localStorage.getItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD");
   },
+  watch: {
+    $route() {
+      this.activePath = this.$route.path;
+      sessionStorage.setItem("activePath", this.activePath);
+    },
+  },
   methods: {
     // 保存链接的激活状态
     saveActiveNav(activePath) {
@@ -186,18 +193,6 @@ export default {
         if (this.editPasswordForm.newPassword != this.editPasswordForm.confirmPassword) {
           return this.$message.error("两次密码不一致，请重新输入！");
         }
-        // 请求接口
-        // const { data: res } = await this.$axios.post(
-        //   "/user/updatePasswordword",
-        //   this.editPasswordForm
-        // );
-        // if (res.success) {
-        //   this.$message.success("密码修改成功，请重新登录！");
-        //   sessionStorage.clear();
-        //   this.$router.push("/login");
-        // } else {
-        //   return this.$message.error(res.msg);
-        // }
         if(this.editPasswordForm.oldPassword===localStorage.getItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD")){
           localStorage.setItem(localStorage.getItem('NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD'),this.editPasswordForm.newPassword);
           this.$message.success("密码修改成功，请重新登录！");

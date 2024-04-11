@@ -93,6 +93,7 @@
   </div>
 </template>
 <script>
+const uuid = require("uuid");
 export default {
   data() {
     return {
@@ -124,7 +125,7 @@ export default {
   mounted(){
     document.onkeydown = (e) => {
       if (e.key === 'Enter') {
-        this.enterLogin();
+        this.isReg?this.registerAndLogin():this.enterLogin();
       }
     };
   },
@@ -138,15 +139,14 @@ export default {
         if (valid) {
           if(this.form.password!==this.form.passwordConfirm){
             this.$message.error("两次密码输入不一致");
-            this.$refs.ruleForm.resetFields();
             return;
           }
           if(localStorage.getItem(this.form.username)!==null){
             this.$message.error("用户已注册，请直接登录");
-            this.$refs.ruleForm.resetFields();
             return;
           }
           localStorage.setItem(this.form.username,this.form.password);
+          sessionStorage.setItem('token',uuid.v4());
           this.$message.success("注册成功，正在前往首页。。。");
           setTimeout(()=>{
             this.$router.push('/home');
@@ -159,23 +159,7 @@ export default {
     login(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // this.loginLoading = true;
-          // this.$axios
-          //   .post("/auth/login", this.form)
-          //   .then((res) => {
-          //     if (res.data.success) {
-          //       sessionStorage.setItem("user",JSON.stringify(res.data.data.user));
-          //       sessionStorage.setItem("token", res.data.token);
-          //       this.$router.push("/home");
-          //     } else {
-          //       this.$message.error(res.data.msg);
-          //       this.loginLoading = false;
-          //     }
-          //   })
-          //   .catch((err) => {
-          //     this.$message.error("服务器连接失败，请稍后重试......");
-          //     this.loginLoading = false;
-          //   });
+          // 业务逻辑
           const model=this.$refs[formName].model;
           const {username,password}=model;
           if(localStorage.getItem(username)===null){
@@ -184,6 +168,7 @@ export default {
             return;
           }
           if(localStorage.getItem(username)===password){
+            sessionStorage.setItem('token',uuid.v4());
             this.$message.success("登录成功，正在前往首页。。。");
             localStorage.setItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD",username);//设置当前用户，防止用户使用此名字注册
             setTimeout(()=>{

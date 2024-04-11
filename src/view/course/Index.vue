@@ -43,7 +43,7 @@
             <el-button
               size="small"
               icon="el-icon-refresh-right"
-              @click="handleClear()"
+              @click="handleReset()"
               >重置</el-button
             >
           </el-form-item>
@@ -62,20 +62,20 @@
           <div>
             <el-radio-group
               size="small"
-              @change="changeRadio($event)"
+              @change="handleSearch()"
               v-model="searchForm.state"
             >
               <el-radio-button label="">全部</el-radio-button>
-              <el-radio-button label="0">已上架</el-radio-button>
-              <el-radio-button label="1">已下架</el-radio-button>
+              <el-radio-button label="on">已上架</el-radio-button>
+              <el-radio-button label="off">已下架</el-radio-button>
             </el-radio-group>
           </div>
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table ref="table" :data="courseData" border>
+      <el-table ref="table" :data="nowPageData" border>
         <el-table-column type="index" label="序号" width="50" />
-        <el-table-column prop="name" label="课程名" show-overflow-tooltip />
+        <el-table-column prop="name" label="课程名称" show-overflow-tooltip />
         <el-table-column prop="code" label="课程编号" show-overflow-tooltip />
         <el-table-column prop="nickname" label="课程封面" width="100">
           <template slot-scope="scope">
@@ -96,7 +96,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="lecturer" label="讲师" show-overflow-tooltip />
+        <el-table-column prop="lecturer.name" label="讲师" show-overflow-tooltip />
         <el-table-column prop="price" label="课程售价" show-overflow-tooltip />
         <el-table-column prop="stateName" label="状态" show-overflow-tooltip />
         <el-table-column label="操作" width="360">
@@ -116,14 +116,14 @@
             <el-button
               type="warning"
               size="small"
-              v-show="scope.row.state == 0"
+              v-show="scope.row.state == 'on'"
               @click="changeCourseStatus(scope.row.id)"
               >下架</el-button
             >
             <el-button
               type="primary"
               size="small"
-              v-show="scope.row.state == 1"
+              v-show="scope.row.state == 'off'"
               @click="changeCourseStatus(scope.row.id)"
               >上架</el-button
             >
@@ -152,42 +152,59 @@
 </template>
 
 <script>
-import Detail from "../course/Detail.vue";
+import Detail from "./CourseDet.vue";
 export default {
   name: "courseManage",
   components: { Detail },
   data() {
     return {
       searchForm: {
+        // 当前页
         current: 1,
+        // 每页显示条数
         size: 10,
         name: "",
         lecturer: "",
         state: "",
+        code: "",
       },
-      total: 1, // 初始化应为 0，这里只做演示效果使用
-      courseData: [
+      // 总条数
+      total: 0,
+      // 待展示的课程数据，不一定是所有课程数据
+      courseData: [],
+      // 当前页数据
+      nowPageData: [
         {
-          id: 123123,
-          name: "抽丝剥茧Vue源码",
-          code: "OB00100",
-          courseUrl: require("@/assets/img/courseurl.jpeg"),
-          phone: "19999999999",
-          state: 0,
-          stateName: "已上架",
-          lecturer: "John",
+          id: '',
+          name: "",
+          code: "",
+          courseUrl: "",
+          phone: "",
+          state: "",
+          stateName: "",
+          lecturer: "",
         },
       ],
-      lecturerList: [{ id: 123123, name: "OB" }],
+      lecturerList:[
+        { id: 123123, name: "尤雨溪" },
+        { id: 123124, name: "OB最强讲师" },
+        { id: 123125, name: "J神讲JS" },
+      ],
     };
   },
   created() {
-    // 初始化表格数据
+    // 初始化表格数据,拿到所有课程数据
     if(!localStorage.getItem('courseData')){
       this.getPageList();
     }
-    this.courseData = JSON.parse(localStorage.getItem("courseData"));
-    this.total = this.courseData.length;
+    else{
+      this.courseData = JSON.parse(localStorage.getItem("courseData"));
+      // 初始化总条数
+      this.total = this.courseData.length;
+      // 初始化当前页数据
+      this.nowPageData = this.courseData.slice(0, this.searchForm.size);
+    }
+
   },
   methods: {
     async getPageList() {
@@ -197,61 +214,66 @@ export default {
       if (result.data.code == 200) {
         this.courseData = result.data.data.records;
         this.courseData.forEach((item) => {
-          item.stateName = item.state ? "已下架" : "已上架";
+          item.stateName = item.state=="off" ? "已下架" : "已上架";
         });
-        this.total = result.data.data.total;
         localStorage.setItem("courseData", JSON.stringify(this.courseData));
-
+        // 初始化总条数
+        this.total = this.courseData.length;
+        // 初始化当前页数据
+        this.nowPageData = this.courseData.slice(0, this.searchForm.size);
       } else {
         this.$message.error(result.data.message);
       }
     },
-    // 切换tab
-    changeRadio(value) {
-      this.searchForm.state = value;
-      // 简单过滤
+    //搜索
+    handleSearch() {
+      const { name='', code='', lecturer='', state="" } = this.searchForm;
+      // 过滤数据
       this.courseData = JSON.parse(localStorage.getItem("courseData")).filter(
         (item) => {
-          if (value == "") {
-            return true;
-          } else {
-            return item.state == value;
+          if(state!==""){
+            return item.name.includes(name) && item.code.includes(code) && (item.lecturer.id == (lecturer==''?item.lecturer.id:lecturer)) && item.state == state;
+          }else{
+            return item.name.includes(name) && item.code.includes(code) && (item.lecturer.id == (lecturer==''?item.lecturer.id:lecturer));
           }
         }
       );
-    },
-    //搜索
-    handleSearch() {
       this.searchForm.current = 1;
-      this.getPageList();
+      this.total = this.courseData.length;
+      this.nowPageData = this.courseData.slice(0, this.searchForm.size);
     },
     //重置
-    handleClear() {
+    handleReset() {
       this.$refs["searchForm"].resetFields();
-      this.getPageList();
+      this.courseData = JSON.parse(localStorage.getItem("courseData"));
+      this.total = this.courseData.length;
+      this.nowPageData = this.courseData.slice(0, this.searchForm.size);
     },
     // 切换每页显示条数
     handleSizeChange(val) {
       this.searchForm.size = val;
       this.searchForm.current = 1;
-      this.getPageList();
+      this.nowPageData = this.courseData.slice(0, val);
     },
     // 点击某一页，跳转某一页
     handleCurrentChange(val) {
       this.searchForm.current = val;
-      this.getPageList();
+      this.nowPageData = this.courseData.slice(
+        (val - 1) * this.searchForm.size,
+        val * this.searchForm.size
+      );
     },
     changeCourseStatus(id) {
       let nowData = JSON.parse(localStorage.getItem("courseData")).find(item=>item.id==id);
-      let title =  nowData.state == 0 ? "下架" : "上架";
+      let title =  nowData.state == "on" ? "下架" : "上架";
       this.$confirm("确认要【" + title + "】该课程吗, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
           // 业务操作
-          nowData.state = nowData.state == 0 ? 1 : 0;
-          nowData.stateName = nowData.state ? "已下架" : "已上架";
+          nowData.state = nowData.state == "on" ? "off" : "on";
+          nowData.stateName = nowData.state=="off" ? "已下架" : "已上架";
           let newData = JSON.parse(localStorage.getItem('courseData')).map(item=>{
             if(item.id==nowData.id){
               return nowData;
@@ -261,6 +283,7 @@ export default {
           });
           localStorage.setItem('courseData',JSON.stringify(newData));
           this.courseData = newData;
+          this.handleSearch();
           this.$message({ message: title + "成功！", type: "success" });
 
         }).catch(() => {
@@ -279,17 +302,10 @@ export default {
       })
         .then(() => {
           // 删除逻辑
-          this.$axios
-            .delete(url, {
-              params: { id: id },
-            })
-            .then((res) => {
-              if (res.data.success) {
-                this.$message({ message: "删除成功！", type: "success" });
-              } else {
-                this.$message.error(res.data.message);
-              }
-            });
+          let newData = JSON.parse(localStorage.getItem('courseData')).filter(item=>item.id!=id);
+          localStorage.setItem('courseData',JSON.stringify(newData));
+          this.courseData = newData;
+          this.$message({ message: "删除成功！", type: "success" });
         })
         .catch(() => {
           this.$message({
@@ -299,7 +315,6 @@ export default {
         });
     },
     openDetail(id) {
-      console.log(this.$refs)
       this.$refs.course_detail.drawer = true;
       this.$refs.course_detail.formData.id = id;
       this.$refs.course_detail.getCourseDetail();
@@ -329,6 +344,13 @@ export default {
   border-color: #4f7458;
   opacity: 0.95;
 }
+.el-table .el-button--primary{
+  background: #455974;
+  color: white;
+  border-color: #455974;
+  opacity: 0.95;
+
+}
 .el-radio-button.el-radio-button--small.is-active>>>.el-radio-button__inner{
   background: linear-gradient(0.25turn,#4f7458,#455974);
   color: white;
@@ -336,6 +358,7 @@ export default {
   opacity: 0.95;
   box-shadow: none;
 }
+
 .el-radio-button--small>>>.el-radio-button__inner:hover{
   color: #4f7458;
   background-color: #dcf5e1;

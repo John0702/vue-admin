@@ -14,9 +14,10 @@
     "echarts": "^5.3.3",
     "element-ui": "^2.15.9",
     "font-awesome": "^4.7.0",
+    "mockjs": "^1.1.0",
+    "uuid": "^9.0.1",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
-    "mockjs": "^1.1.0"
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

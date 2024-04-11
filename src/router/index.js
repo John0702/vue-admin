@@ -78,7 +78,7 @@ const router = new Router({
           meta: {
             title: '课程详情'
           },
-          component: () => import('@/view/course/Detail.vue'),
+          component: () => import('@/view/course/CourseDet.vue'),
         },
         {
           path:'/article/list',
@@ -109,12 +109,11 @@ router.beforeEach((to, from, next) => {
     return next()
   }
   // 获取token
-  // const token= sessionStorage.getItem('token')
-  // if (!token) {
-  //   return next('/login')
-  // } else {
-  //   next()
-  // }
-  return next()
+  const token= sessionStorage.getItem('token')
+  if (!token) {
+    return next('/login')
+  } else {
+    return next()
+  }
 })
 export default router

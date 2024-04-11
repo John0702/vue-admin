@@ -54,8 +54,8 @@ Mock.mock("/open-book/manage/deleteUser","delete",{
 Mock.mock("/open-book/course/list","get",{
   code: 200,
   data: {
-    "total": 10,
-    "records|10": [
+    "total": 50,
+    "records|50": [
       {
         "id|+1": 1,
         "name": "@ctitle(3,4)",
@@ -74,10 +74,15 @@ Mock.mock("/open-book/course/list","get",{
         ],
         "price|1": [99, 199, 299, 399, 499],
         "code": "@string(5)",
-        "lecturer": "@cname",
+        "lecturer|1":[
+          { id: 123123, name: "尤雨溪" },
+          { id: 123124, name: "OB最强讲师" },
+          { id: 123125, name: "J神讲JS" },
+        ],
         "courseUrl":require("@/assets/img/courseurl.jpeg"),
-        "state|1":[0,1],
-        "desc": "@cparagraph(2,3)",
+        "state|1":["on","off"],
+        "lecturerDesc": "@cparagraph(2,3)",
+        "courseDesc": "@cparagraph(3,5)",
       }
     ]
   },
