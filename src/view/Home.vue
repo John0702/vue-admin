@@ -176,7 +176,13 @@ export default {
   },
   watch: {
     $route() {
-      this.activePath = this.$route.path;
+      console.log(this.$route.path);
+      if(this.$route.path.includes('course')){
+        this.activePath = '/course/list';
+      }
+      else{
+        this.activePath = this.$route.path;
+      }
       sessionStorage.setItem("activePath", this.activePath);
     },
   },

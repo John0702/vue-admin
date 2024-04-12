@@ -75,13 +75,12 @@ Mock.mock("/open-book/course/list","get",{
         "price|1": [99, 199, 299, 399, 499],
         "code": "@string(5)",
         "lecturer|1":[
-          { id: 123123, name: "尤雨溪" },
-          { id: 123124, name: "OB最强讲师" },
-          { id: 123125, name: "J神讲JS" },
+          { id: 123123, name: "尤雨溪", desc: '尤雨溪（Evan You），毕业于科尔盖特大学，前端框架Vue.js的作者、HTML5版Clear的打造人、独立开源开发者。曾就职于Google Creative Labs和Meteor Development Group。由于工作中大量接触开源的JavaScript项目，最后自己也走上了开源之路，现全职开发和维护Vue.js。' },
+          { id: 123124, name: "OB最强讲师", desc: '十年一线大厂经验，中科院研究院技术专家，全栈开发。' },
+          { id: 123125, name: "J神讲JS",desc: 'J神，前端开发工程师，专注于前端技术研究，对前端技术有着浓厚的兴趣，热衷于分享前端技术。' },
         ],
         "courseUrl":require("@/assets/img/courseurl.jpeg"),
         "state|1":["on","off"],
-        "lecturerDesc": "@cparagraph(2,3)",
         "courseDesc": "@cparagraph(3,5)",
       }
     ]

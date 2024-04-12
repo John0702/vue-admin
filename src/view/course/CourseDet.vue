@@ -12,14 +12,13 @@
         <el-row type="flex" justify="space-between">
           <el-col :span="6">
             <el-avatar
-              style="width: 80px; height: 80px; margin-top: 25px"
+              style="width: 80px; height: 80px; margin-top: 20px"
               :src="require('../../assets/img/open-book.svg')"
             ></el-avatar>
           </el-col>
           <el-col :span="16">
-            <h3>
-              <!-- {{ formData.lecturer ? formData.lecturer : "Open-Book" }} -->
-              {{$constant.officialAccount}}
+            <h3 style="margin-bottom: -10px;">
+              {{ formData.lecturer ? formData.lecturer : "Open-Book" }}
               <i
                 style="color: #67c23a; font-size: 25px"
                 class="el-icon-success"
@@ -29,7 +28,7 @@
               {{
                 formData.lecturerDesc
                   ? formData.lecturerDesc
-                  : "十年一线大厂经验，中科院研究院技术专家，全栈开发。"
+                  : "这位讲师的身世很神秘，什么都没有留下。"
               }}
             </p>
             <p class="lecturer_desc">
@@ -80,8 +79,8 @@ export default {
       const det=JSON.parse(localStorage.getItem("courseData")).find(
         (item) => item.id === this.formData.id
       );
-      this.formData = { lecturer, lecturerDesc, courseDesc, id, state }=det;
-
+      const { lecturer, courseDesc, id, state }=det;
+      this.formData = { lecturer:lecturer.name, lecturerDesc:lecturer.desc, courseDesc, id, state };
     },
     handleClose() {
       this.drawer = false;

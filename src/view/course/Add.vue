@@ -46,7 +46,7 @@
             maxlength="1000"
             show-word-limit
             type="textarea"
-            v-model="form.desc"
+            v-model="form.courseDesc"
             placeholder="请输入课程简介"
           ></el-input>
         </el-form-item>
@@ -78,7 +78,7 @@ export default {
         },
         category: [],
         price: "",
-        desc: "",
+        courseDesc: "",
         courseUrl: defaultUrl,
       },
       categoryList: [
@@ -144,7 +144,7 @@ export default {
             trigger: "change",
           },
         ],
-        desc: [
+        courseDesc: [
           {
             required: true,
             message: "请输入课程简介",
@@ -159,7 +159,6 @@ export default {
     if (this.$route.query.id) {
       this.getCourseDetail(this.$route.query.id);
     }
-    console.log(this.form);
   },
   methods: {
     // 获取课程详情
@@ -255,5 +254,8 @@ export default {
 .content>>>.el-input-number__decrease:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled),
 .content>>>.el-input-number__increase:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled){
   border-color: #4f7458;
+}
+.content>>>.el-input__count{
+  line-height: 10px;
 }
 </style>
