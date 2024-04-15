@@ -16,8 +16,8 @@ Mock.mock("/open-book/manage/init","get",{
 Mock.mock("/open-book/manage/userList","get",{
   code: 200,
   data: {
-    "total": 10,
-    "records|10": [
+    "total": 50,
+    "records|50": [
       {
         "id|+1": 1,
         "name": "@cname",

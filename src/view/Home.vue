@@ -172,13 +172,14 @@ export default {
     this.activePath = sessionStorage.getItem("activePath")
       ? sessionStorage.getItem("activePath")
       : "/index";
-    this.currentUser = localStorage.getItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD");
+    this.currentUser = sessionStorage.getItem("nowUser");
   },
   watch: {
     $route() {
-      console.log(this.$route.path);
-      if(this.$route.path.includes('course')){
-        this.activePath = '/course/list';
+      const path = this.$route.path.split('/')[1];
+      const mainPaths=['course','user','order','article'];
+      if(path==='index' || mainPaths.includes(path)){
+        this.activePath = '/'+path+'/list';
       }
       else{
         this.activePath = this.$route.path;
@@ -199,8 +200,8 @@ export default {
         if (this.editPasswordForm.newPassword != this.editPasswordForm.confirmPassword) {
           return this.$message.error("两次密码不一致，请重新输入！");
         }
-        if(this.editPasswordForm.oldPassword===localStorage.getItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD")){
-          localStorage.setItem(localStorage.getItem('NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD'),this.editPasswordForm.newPassword);
+        if(this.editPasswordForm.oldPassword===sessionStorage.getItem("nowUser")){
+          sessionStorage.setItem(sessionStorage.getItem('nowUser'),this.editPasswordForm.newPassword);
           this.$message.success("密码修改成功，请重新登录！");
           sessionStorage.clear();
           setTimeout(()=>{

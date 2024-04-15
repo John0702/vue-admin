@@ -96,10 +96,7 @@ export default {
   },
   methods: {
     getUserDetail() {
-      this.userInfo=JSON.parse(localStorage.getItem('tableData')).find(item=>item.id==this.userInfo.id);
-    },
-    handleClose() {
-      this.drawer = false;
+      this.userInfo=JSON.parse(localStorage.getItem('userData')).find(item=>item.id==this.userInfo.id);
     },
   },
 };

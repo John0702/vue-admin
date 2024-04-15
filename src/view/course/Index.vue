@@ -204,13 +204,10 @@ export default {
       // 初始化当前页数据
       this.nowPageData = this.courseData.slice(0, this.searchForm.size);
     }
-
   },
   methods: {
     async getPageList() {
-      const result = await this.$axios.get('/course/list', /*{
-        params: this.searchForm,
-      }*/);
+      const result = await this.$axios.get('/course/list');
       if (result.data.code == 200) {
         this.courseData = result.data.data.records;
         this.courseData.forEach((item) => {
@@ -247,6 +244,7 @@ export default {
       this.$refs["searchForm"].resetFields();
       this.courseData = JSON.parse(localStorage.getItem("courseData"));
       this.total = this.courseData.length;
+      this.searchForm.current = 1;
       this.nowPageData = this.courseData.slice(0, this.searchForm.size);
     },
     // 切换每页显示条数
@@ -377,6 +375,8 @@ export default {
 .pagination.el-pagination>>>.el-pager li.active,
 .pagination.el-pagination>>>.el-pager li:hover{
   color: #3f6949;
+  font-weight: 700;
+  font-size: large;
 }
 .pagination.el-pagination>>>.btn-prev:hover,
 .pagination.el-pagination>>>.btn-next:hover{

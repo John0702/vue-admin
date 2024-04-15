@@ -18,8 +18,8 @@
           </el-form-item>
           <el-form-item label="性别:" prop="sex">
             <el-select v-model="searchForm.sex" placeholder="请选择用户性别">
-              <el-option label="女" value="0"></el-option>
-              <el-option label="男" value="1"></el-option>
+              <el-option label="女" value="女"></el-option>
+              <el-option label="男" value="男"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -33,7 +33,7 @@
             <el-button
               size="small"
               icon="el-icon-refresh-right"
-              @click="handleClear()"
+              @click="handleReset()"
               >重置</el-button
             >
           </el-form-item>
@@ -44,7 +44,7 @@
           <div>
             <el-radio-group
               size="small"
-              @change="changeRadio($event)"
+              @change="handleSearch()"
               v-model="searchForm.state"
             >
               <el-radio-button label="">全部</el-radio-button>
@@ -55,7 +55,7 @@
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table ref="table" :data="tableData" border>
+      <el-table ref="table" :data="nowPageData" border>
         <el-table-column type="index" label="序号" width="50"/>
         <el-table-column prop="name" label="姓名" show-overflow-tooltip />
         <el-table-column prop="sex" label="性别" show-overflow-tooltip>
@@ -112,7 +112,8 @@ export default {
         state: "",
       },
       total: 0,
-      tableData: [
+      userData: [],
+      nowPageData: [
         {
           name: "",
           sex: "",
@@ -125,79 +126,84 @@ export default {
     };
   },
   created() {
-    if(!localStorage.getItem('tableData')){
+    if(!localStorage.getItem('userData')){
       this.getPageList();
     }
-    this.tableData = JSON.parse(localStorage.getItem("tableData"));
-    this.total = this.tableData.length;
+    else{
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+      // 初始化总条数
+      this.total = this.userData.length;
+      // 初始化当前页数据
+      this.nowPageData = this.userData.slice(0, this.searchForm.size);
+    }
   },
   methods: {
     async getPageList() {
       const result = await this.$axios.get("manage/userList");
       if (result.data.code===200) {
-        this.tableData = result.data.data.records;
-        this.tableData.forEach((item) => {
+        this.userData = result.data.data.records;
+        this.userData.forEach((item) => {
           item.status = item.state ? "已注销" : "正常";
         });
-        console.log(this.tableData);
-        this.total = result.data.data.total;
-        localStorage.setItem("tableData", JSON.stringify(this.tableData));
+        localStorage.setItem("userData", JSON.stringify(this.userData));
+        this.total = this.userData.length;
+        this.nowPageData = this.userData.slice(0, this.searchForm.size);
       } else {
         this.$message.error(result.data.message);
       }
     },
-    // 切换tab
-    changeRadio(value) {
-      this.searchForm.state = value;
-      this.getPageList();
-    },
     //搜索
     handleSearch() {
+      const { name='', sex='', state="" } = this.searchForm;
+      // 过滤数据
+      this.userData = JSON.parse(localStorage.getItem("userData")).filter(
+        (item) => {
+          if(state!==""){
+            return item.name.includes(name) && item.sex.includes(sex) && item.state == state;
+          }else{
+            return item.name.includes(name) && item.sex.includes(sex);
+          }
+        }
+      );
       this.searchForm.current = 1;
-      this.getPageList();
+      this.total = this.userData.length;
+      this.nowPageData = this.userData.slice(0, this.searchForm.size);
     },
     //重置
-    handleClear() {
-      this.$refs.searchForm.resetFields();
-      this.getPageList();
+    handleReset() {
+      this.$refs["searchForm"].resetFields();
+      this.userData = JSON.parse(localStorage.getItem("userData"));
+      this.total = this.userData.length;
+      this.searchForm.current = 1;
+      this.nowPageData = this.userData.slice(0, this.searchForm.size);
     },
-    // 切换每页显示条数
-    handleSizeChange(val) {
+     // 切换每页显示条数
+     handleSizeChange(val) {
       this.searchForm.size = val;
       this.searchForm.current = 1;
-      this.getPageList();
+      this.nowPageData = this.userData.slice(0, val);
     },
     // 点击某一页，跳转某一页
     handleCurrentChange(val) {
       this.searchForm.current = val;
-      this.getPageList();
+      this.nowPageData = this.userData.slice(
+        (val - 1) * this.searchForm.size,
+        val * this.searchForm.size
+      );
     },
     // 删除
-    deleteUser(id) {
-      console.log(id);
-      this.$confirm("确认要删除该用户吗, 是否继续?", "提示", {
+    deletecourse(id) {
+      this.$confirm("确认要删除该课程吗, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
           // 删除逻辑
-          this.$axios
-            .delete("manage/deleteUser", /*{
-              params: { id: id },
-            }*/)
-            .then((res) => {
-              if (res.data.code === 200) {
-                let tableData = JSON.parse(localStorage.getItem("tableData"));
-                tableData = tableData.filter(item => item.id !== id);
-                localStorage.setItem("tableData", JSON.stringify(tableData));
-                this.tableData = tableData;
-                this.total = this.total - 1;
-                this.$message({ message: "删除成功！", type: "success" });
-              } else {
-                this.$message.error(res.data.message);
-              }
-            });
+          let newData = JSON.parse(localStorage.getItem('userData')).filter(item=>item.id!=id);
+          localStorage.setItem('userData',JSON.stringify(newData));
+          this.userData = newData;
+          this.$message({ message: "删除成功！", type: "success" });
         })
         .catch(() => {
           this.$message({
@@ -267,6 +273,8 @@ export default {
 .pagination.el-pagination>>>.el-pager li.active,
 .pagination.el-pagination>>>.el-pager li:hover{
   color: #3f6949;
+  font-weight: 700;
+  font-size: large;
 }
 .pagination.el-pagination>>>.btn-prev:hover,
 .pagination.el-pagination>>>.btn-next:hover{

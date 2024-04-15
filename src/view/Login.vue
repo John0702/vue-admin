@@ -147,6 +147,7 @@ export default {
           }
           localStorage.setItem(this.form.username,this.form.password);
           sessionStorage.setItem('token',uuid.v4());
+          sessionStorage.setItem("nowUser",this.form.username);//设置当前用户，防止用户使用此名字注册
           this.$message.success("注册成功，正在前往首页。。。");
           setTimeout(()=>{
             this.$router.push('/home');
@@ -170,7 +171,7 @@ export default {
           if(localStorage.getItem(username)===password){
             sessionStorage.setItem('token',uuid.v4());
             this.$message.success("登录成功，正在前往首页。。。");
-            localStorage.setItem("NowUser-F0DC4693-CB74-8530-2EBB-3E9B7F05E2CD",username);//设置当前用户，防止用户使用此名字注册
+            sessionStorage.setItem("nowUser",username);//设置当前用户，防止用户使用此名字注册
             setTimeout(()=>{
               this.$router.push('/home');
             },1500);
