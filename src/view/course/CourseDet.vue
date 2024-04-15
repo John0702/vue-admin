@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <el-drawer
-      title="课程详情"
+      :title="formData.name"
       :visible.sync="drawer"
       :before-close="handleClose"
       :wrapperClosable="false"
@@ -72,15 +72,14 @@ export default {
     };
   },
   created(){
-    // console.log(this.formData);
   },
   methods: {
     getCourseDetail() {
       const det=JSON.parse(localStorage.getItem("courseData")).find(
         (item) => item.id === this.formData.id
       );
-      const { lecturer, courseDesc, id, state }=det;
-      this.formData = { lecturer:lecturer.name, lecturerDesc:lecturer.desc, courseDesc, id, state };
+      const { lecturer, courseDesc, id, state, name }=det;
+      this.formData = { lecturer:lecturer.name, lecturerDesc:lecturer.desc, courseDesc, id, state, name};
     },
     handleClose() {
       this.drawer = false;

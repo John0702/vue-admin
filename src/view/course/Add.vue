@@ -33,6 +33,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="课程封面:">
+          <img :src="form.courseUrl" alt="" style="width: 150px; height: 100px" />
           <Upload
             ref="uploadFile"
             :upload-list="form.courseUrl"
@@ -165,7 +166,6 @@ export default {
     getCourseDetail(id) {
       const data=JSON.parse(localStorage.getItem('courseData')).find(item=>item.id==id);
       this.form = data;
-      console.log(this.form);
     },
     // 新增/编辑课程内容
     onSubmit(formName) {
@@ -179,7 +179,6 @@ export default {
             this.form.state = 1;
             this.form.stateName = "未上架";
             let newData = this.form;
-            console.log(newData,'newData');
             localStorage.setItem('courseData',JSON.stringify([newData,...JSON.parse(localStorage.getItem('courseData'))]));
             this.$message.success("新增成功");
             this.$router.back();

@@ -43,7 +43,7 @@ const router = new Router({
           meta: {
             title: '用户详情'
           },
-          component: () => import('@/view/user/Detail.vue'),
+          component: () => import('@/view/user/userDet.vue'),
         },
         {
           path:'/user/edit',

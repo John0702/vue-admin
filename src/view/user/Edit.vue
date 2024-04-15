@@ -47,31 +47,28 @@
 export default {
   data(){
     return {
-      user:{
-
-      }
+      user:{}
     }
   },
   created(){
     this.user.id = this.$route.query.id;
-    console.log(this.user.id);
     this.getUserDetail(this.user.id);
   },
   methods:{
     getUserDetail(id){
       // 通过id获取用户信息
-      this.user = JSON.parse(localStorage.getItem('tableData')).find(item=>item.id==id);
+      this.user = JSON.parse(localStorage.getItem('userData')).find(item=>item.id==id);
     },
     editUser(id){
       // 编辑用户信息
-      let tableData = JSON.parse(localStorage.getItem('tableData'));
-      tableData = tableData.map(item=>{
+      let userData = JSON.parse(localStorage.getItem('userData'));
+      userData = userData.map(item=>{
         if(item.id == id){
           return this.user;
         }
         return item;
       });
-      localStorage.setItem('tableData',JSON.stringify(tableData));
+      localStorage.setItem('userData',JSON.stringify(userData));
       this.$message({
         message: '编辑成功',
         type: 'success'
