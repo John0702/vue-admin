@@ -50,7 +50,7 @@ const router = new Router({
           meta:{
             title:'用户信息编辑'
           },
-          component:()=>import('@/view/user/Edit.vue')
+          component:()=>import('@/view/user/EditUser.vue')
         },
         {
           path: '/course/list',
@@ -64,14 +64,14 @@ const router = new Router({
           meta: {
             title: '新增课程'
           },
-          component: () => import('@/view/course/Add.vue'),
+          component: () => import('@/view/course/AddCourse.vue'),
         },
         {
           path: '/course/update',
           meta: {
             title: '编辑课程'
           },
-          component: () => import('@/view/course/Add.vue'),
+          component: () => import('@/view/course/AddCourse.vue'),
         },
         {
           path: '/course/detail',
@@ -93,6 +93,20 @@ const router = new Router({
             title:'订单管理'
           },
           component:()=>import('@/view/order/Index.vue')
+        },
+        {
+          path:'/order/detail',
+          meta:{
+            title:'订单详情'
+          },
+          component:()=>import('@/view/order/OrderDet.vue')
+        },
+        {
+          path:'/order/edit',
+          meta:{
+            title:'订单编辑'
+          },
+          component:()=>import('@/view/order/EditOrder.vue')
         }
       ]
     },

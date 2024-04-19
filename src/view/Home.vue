@@ -206,7 +206,7 @@ export default {
           sessionStorage.clear();
           setTimeout(()=>{
             this.$router.push("/login");
-          },1500);
+          },1000);
         }else{
           return this.$message.error("原密码错误，请重新输入！");
         }
@@ -335,6 +335,9 @@ export default {
 }
 .el-button--primary{
   background-color: #3f6949;
+  border-color: #3f6949;
+}
+*>>>.el-input__inner:focus{
   border-color: #3f6949;
 }
 </style>

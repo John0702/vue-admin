@@ -23,7 +23,11 @@
           ></el-input-number>
         </el-form-item>
         <el-form-item label="课程讲师:" prop="lecturer">
-          <el-select v-model="form.lecturer.name" @change="handleLecChange" placeholder="请选择讲师">
+          <el-select
+            v-model="form.lecturer.name"
+            @change="handleLecChange"
+            placeholder="请选择讲师"
+          >
             <el-option
               v-for="item in lecturerList"
               :key="item.id"
@@ -33,13 +37,28 @@
           </el-select>
         </el-form-item>
         <el-form-item label="课程封面:">
-          <img :src="form.courseUrl" alt="" style="width: 150px; height: 100px" />
-          <Upload
-            ref="uploadFile"
-            :upload-list="form.courseUrl"
-            @uploadFile="uploadFile"
-            @removeFile="removeFile"
-          />
+          <el-upload
+            ref="upload"
+            action="/open-book/course/upload"
+            list-type="picture-card"
+            :file-list="[form.courseUrl]"
+            :limit="1"
+            accept=".png, .jpeg, .jpg, .gif, .svg, .bmp, .webp"
+            :on-change="uploadFile"
+            :on-success="uploadSuccess"
+            :on-error="uploadError"
+            :on-preview="handlePictureCardPreview"
+          >
+            <span slot="default">{{form.id?'更新课程封面':'上传课程封面'}}</span>
+
+            <div slot="tip" class="el-upload__tip">
+              支持扩展名：.png .jpeg .jpg .gif .svg .bmp .webp ，文件大小限制
+              10M。
+            </div>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="" />
+          </el-dialog>
         </el-form-item>
         <el-form-item label="课程简介" prop="desc">
           <el-input
@@ -53,7 +72,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onSubmit('form')">保 存</el-button>
-          <el-button @click="$router.back()">取 消</el-button>
+          <el-button @click="handleBack">取 消</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -61,14 +80,15 @@
 </template>
 
 <script>
-import Upload from "../../components/Upload.vue";
-const defaultUrl = require("../../assets/img/defaultUrl.jpeg");
 const Mock = require("mockjs");
 const Random = Mock.Random;
 export default {
-  components: { Upload },
   data() {
     return {
+      emptyUrl: require("@/assets/img/emptyUrl.png"),
+      newCourseUrl: "",
+      dialogVisible: false,
+      dialogImageUrl: "",
       form: {
         id: "",
         name: "",
@@ -80,7 +100,7 @@ export default {
         category: [],
         price: "",
         courseDesc: "",
-        courseUrl: defaultUrl,
+        courseUrl: "",
       },
       categoryList: [
         {
@@ -118,10 +138,10 @@ export default {
         { id: 123124, name: "OB最强讲师" },
         { id: 123125, name: "J神讲JS" },
       ],
-      cascaderProps:{
-        value:'id',
-        label:'name',
-        children:'child'
+      cascaderProps: {
+        value: "id",
+        label: "name",
+        children: "child",
       },
       rules: {
         name: [
@@ -162,36 +182,69 @@ export default {
     }
   },
   methods: {
+    handlePictureCardPreview(file) {
+      console.log(1);
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    uploadFile(file) {
+      let reader = new FileReader();
+      reader.onload = () => {
+        this.newCourseUrl = reader.result;
+      };
+      reader.readAsDataURL(file.raw);
+    },
+    uploadSuccess() {
+      this.$message.success("上传成功");
+    },
+    uploadError() {
+      this.$message.error("上传失败");
+    },
     // 获取课程详情
     getCourseDetail(id) {
-      const data=JSON.parse(localStorage.getItem('courseData')).find(item=>item.id==id);
+      const data = JSON.parse(localStorage.getItem("courseData")).find(
+        (item) => item.id == id
+      );
       this.form = data;
     },
     // 新增/编辑课程内容
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          let type=this.$route.query.id?'edit':'add';
+          let type = this.$route.query.id ? "edit" : "add";
           // 新增
-          if(type=='add'){
+          if (type == "add") {
             this.form.id = new Date().getTime();
             this.form.code = Random.string("number", 8);
-            this.form.state = 1;
+            this.form.state = "off";
             this.form.stateName = "未上架";
+            this.form.courseUrl = this.newCourseUrl?this.newCourseUrl:this.emptyUrl;
+
             let newData = this.form;
-            localStorage.setItem('courseData',JSON.stringify([newData,...JSON.parse(localStorage.getItem('courseData'))]));
+            localStorage.setItem(
+              "courseData",
+              JSON.stringify([
+                newData,
+                ...JSON.parse(localStorage.getItem("courseData")),
+              ])
+            );
             this.$message.success("新增成功");
             this.$router.back();
-          }else{
+          } else {
             // 编辑
-            let newData = JSON.parse(localStorage.getItem('courseData')).map(item=>{
-              if(item.id==this.form.id){
-                return this.form;
-              }else{
-                return item;
+            if (this.newCourseUrl) {
+              this.form.courseUrl = this.newCourseUrl;
+            }
+            let newData = JSON.parse(localStorage.getItem("courseData")).map(
+              (item) => {
+                if (item.id == this.form.id) {
+                  return this.form;
+                } else {
+                  return item;
+                }
               }
-            });
-            localStorage.setItem('courseData',JSON.stringify(newData));
+            );
+            localStorage.setItem("courseData", JSON.stringify(newData));
             this.$message.success("编辑成功");
             this.$router.back();
           }
@@ -200,24 +253,12 @@ export default {
         }
       });
     },
-    // 上传文件
-    uploadFile(file) {
-      this.form.courseUrl.push(file);
-    },
-    // 删除文件
-    removeFile(id) {
-      let fileIds = this.form.courseUrl;
-      var index = fileIds.findIndex((item) => {
-        if (item.id == id) {
-          return true;
-        }
-      });
-      if (index != -1) {
-        fileIds.splice(index, 1);
-      }
-    },
     handleLecChange(value) {
-      this.form.lecturer = this.lecturerList.find(item=>item.id==value);
+      this.form.lecturer = this.lecturerList.find((item) => item.id == value);
+    },
+    handleBack() {
+      this.form.courseUrl = this.newCourseUrl;
+      this.$router.back();
     },
   },
 };
@@ -228,33 +269,54 @@ export default {
 .el-select {
   width: 440px;
 }
-.content>>>.el-input__inner:focus{
+.content >>> .el-input__inner:focus {
   border-color: #4f7458;
 }
-.content>>>.el-textarea__inner:focus{
+.content >>> .el-textarea__inner:focus {
   border-color: #4f7458;
 }
-.el-button--primary{
+.el-button--primary {
   background-color: #4f7458;
   border-color: #4f7458;
 }
-.el-button.el-button--default:hover{
+.el-button.el-button--default:hover {
   color: #4f7458;
   border-color: #dcf5e1;
   background-color: #dcf5e1;
 }
-.content>>>.el-cascader .el-input.is-focus .el-input__inner{
+.content >>> .el-cascader .el-input.is-focus .el-input__inner {
   border-color: #4f7458;
 }
-.content>>>.el-input-number__decrease:hover,
-.content>>>.el-input-number__increase:hover{
+.content >>> .el-input-number__decrease:hover,
+.content >>> .el-input-number__increase:hover {
   color: #4f7458;
 }
-.content>>>.el-input-number__decrease:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled),
-.content>>>.el-input-number__increase:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled){
+.content
+  >>> .el-input-number__decrease:hover:not(.is-disabled)
+  ~ .el-input
+  .el-input__inner:not(.is-disabled),
+.content
+  >>> .el-input-number__increase:hover:not(.is-disabled)
+  ~ .el-input
+  .el-input__inner:not(.is-disabled) {
   border-color: #4f7458;
 }
-.content>>>.el-input__count{
-  line-height: 10px;
+.content >>> .el-input__count {
+  line-height: 15px;
+  margin-bottom: -20px;
+}
+.el-button:active {
+  color: #4f7458;
+  border-color: #4f7458;
+}
+.el-button:focus {
+  color: #4f7458;
+  border-color: none;
+  background-color: #dcf5e1;
+}
+.content >>> .el-upload--picture-card:hover,
+.content >>> .el-upload:focus {
+  border-color: #4f7458;
+  color: #4f7458;
 }
 </style>

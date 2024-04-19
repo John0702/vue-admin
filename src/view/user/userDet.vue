@@ -116,7 +116,6 @@ export default {
 }
 .el-button.el-button--default.el-button--small:hover{
   color: #4f7458;
-  border-color: #4f7458;
   background-color: #dcf5e1;
 }
 .el-button.el-button--primary.el-button--small{

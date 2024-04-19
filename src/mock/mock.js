@@ -2,7 +2,7 @@ import Mock from 'mockjs'
 
 const Random = Mock.Random
 // mock登录后用户的数据
-Mock.mock("/open-book/manage/init","get",{
+Mock.mock("/open-book/home/init","get",{
   code: 200,
   data: {
     "totalUser|101-2000": 1,
@@ -13,7 +13,7 @@ Mock.mock("/open-book/manage/init","get",{
   message:"ok",
 });
 // mock用户列表
-Mock.mock("/open-book/manage/userList","get",{
+Mock.mock("/open-book/user/list","get",{
   code: 200,
   data: {
     "total": 50,
@@ -43,11 +43,6 @@ Mock.mock("/open-book/manage/userList","get",{
       }
     ]
   },
-  message:"ok",
-})
-// 删除用户
-Mock.mock("/open-book/manage/deleteUser","delete",{
-  code: 200,
   message:"ok",
 })
 // mock课程列表
@@ -86,4 +81,53 @@ Mock.mock("/open-book/course/list","get",{
     ]
   },
   message:"ok",
+})
+// 订单列表
+Mock.mock("/open-book/order/list","get",{
+    code: 200,
+    data: {
+      "total": 50,
+      "records|50": [
+        {
+          "id": "@string(5)",
+          "userName": "@cname",
+          "courseName": "@ctitle(3,4)",
+          "coursePrice|1": [99, 199, 299, 399, 499],
+          "sex|1": ["男", "女"],
+          "phone": /^1[385][1-9]\d{8}/,
+          "address": "@county(true)",
+          "payTime": "@datetime",
+          "payType|1": ["alipay","wechat"],
+        }
+      ]
+    },
+    message:"ok",
+})
+
+// 文章数据
+Mock.mock("/open-book/article/list","get",{
+  code: 200,
+  data: {
+    "total": 50,
+    "records|50": [
+      {
+        "id|+1": 1,
+        "code": "@string(5)",
+        "title": "@ctitle(3,4)",
+        "titleUrl":require("@/assets/img/articleUrl.jpg"),
+        "author": "@cname",
+        "pv": "@integer(10000,999999)",
+        "updateTime": "@datetime",
+      }
+    ]
+  },
+  message:"ok",
+})
+
+// 上传课程封面
+Mock.mock("/open-book/course/upload","post",(req)=>{
+  return {
+    code: 200,
+    message:"ok",
+  }
 })

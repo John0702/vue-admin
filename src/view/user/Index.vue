@@ -16,6 +16,12 @@
               placeholder="请输入用户名称"
             />
           </el-form-item>
+          <el-form-item label="用户英文名:" prop="name">
+            <el-input
+              v-model.trim="searchForm.EnglishName"
+              placeholder="请输入用户英文名"
+            />
+          </el-form-item>
           <el-form-item label="性别:" prop="sex">
             <el-select v-model="searchForm.sex" placeholder="请选择用户性别">
               <el-option label="女" value="女"></el-option>
@@ -55,7 +61,7 @@
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table ref="table" :data="nowPageData" border>
+      <el-table ref="table" :data="nowPageData" border stripe>
         <el-table-column type="index" label="序号" width="50"/>
         <el-table-column prop="name" label="姓名" show-overflow-tooltip />
         <el-table-column prop="sex" label="性别" show-overflow-tooltip>
@@ -108,6 +114,7 @@ export default {
         current: 1,
         size: 10,
         name: "",
+        EnglishName: "",
         sex: "",
         state: "",
       },
@@ -136,10 +143,15 @@ export default {
       // 初始化当前页数据
       this.nowPageData = this.userData.slice(0, this.searchForm.size);
     }
+    window.addEventListener("keydown", (e) => {
+      if (e.key === 'Enter') {
+        this.handleSearch();
+      }
+    });
   },
   methods: {
     async getPageList() {
-      const result = await this.$axios.get("manage/userList");
+      const result = await this.$axios.get("/user/list");
       if (result.data.code===200) {
         this.userData = result.data.data.records;
         this.userData.forEach((item) => {
@@ -154,14 +166,14 @@ export default {
     },
     //搜索
     handleSearch() {
-      const { name='', sex='', state="" } = this.searchForm;
+      const { name='', sex='', state="",EnglishName='' } = this.searchForm;
       // 过滤数据
       this.userData = JSON.parse(localStorage.getItem("userData")).filter(
         (item) => {
           if(state!==""){
-            return item.name.includes(name) && item.sex.includes(sex) && item.state == state;
+            return item.name.includes(name) && item.sex.includes(sex) && item.EnglishName.includes(EnglishName) && item.state == state;
           }else{
-            return item.name.includes(name) && item.sex.includes(sex);
+            return item.name.includes(name) && item.sex.includes(sex) && item.EnglishName.includes(EnglishName);
           }
         }
       );
@@ -192,8 +204,8 @@ export default {
       );
     },
     // 删除
-    deletecourse(id) {
-      this.$confirm("确认要删除该课程吗, 是否继续?", "提示", {
+    deleteUser(id) {
+      this.$confirm("确认要删除该用户吗, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
@@ -203,6 +215,8 @@ export default {
           let newData = JSON.parse(localStorage.getItem('userData')).filter(item=>item.id!=id);
           localStorage.setItem('userData',JSON.stringify(newData));
           this.userData = newData;
+          this.total = this.userData.length;
+          this.nowPageData = this.userData.slice((this.searchForm.current-1)*this.searchForm.size, this.searchForm.current*this.searchForm.size);
           this.$message({ message: "删除成功！", type: "success" });
         })
         .catch(() => {
@@ -211,21 +225,6 @@ export default {
             message: "已取消删除",
           });
         });
-    },
-    // 路由跳转
-    // changeView(url, queryParams) {
-    //   this.$router.push({
-    //     path: url,
-    //     query: queryParams,
-    //   });
-    // },
-  },
-  watch: {
-    tableData: {
-      handler: function (newVal) {
-        localStorage.setItem("tableData", JSON.stringify(newVal));
-      },
-      deep: true,
     },
   },
 };
