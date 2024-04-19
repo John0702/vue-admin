@@ -73,11 +73,11 @@
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table ref="table" :data="nowPageData" border>
+      <el-table ref="table" :data="nowPageData" border stripe>
         <el-table-column type="index" label="序号" width="50" />
         <el-table-column prop="name" label="课程名称" show-overflow-tooltip />
         <el-table-column prop="code" label="课程编号" show-overflow-tooltip />
-        <el-table-column prop="nickname" label="课程封面" width="100">
+        <el-table-column prop="courseUrl" label="课程封面" width="100">
           <template slot-scope="scope">
             <div>
               <el-popover placement="right" trigger="hover">
@@ -146,16 +146,16 @@
         popper-class="my-pagination-ctr"
       />
       <!-- 详情--->
-      <Detail ref="course_detail" />
+      <CourseDet ref="course_detail" />
     </el-card>
   </div>
 </template>
 
 <script>
-import Detail from "./CourseDet.vue";
+import CourseDet from "./CourseDet.vue";
 export default {
   name: "courseManage",
-  components: { Detail },
+  components: { CourseDet },
   data() {
     return {
       searchForm: {
@@ -204,6 +204,11 @@ export default {
       // 初始化当前页数据
       this.nowPageData = this.courseData.slice(0, this.searchForm.size);
     }
+    window.addEventListener("keydown", (e) => {
+      if (e.key === 'Enter') {
+        this.handleSearch();
+      }
+    });
   },
   methods: {
     async getPageList() {
@@ -303,6 +308,8 @@ export default {
           let newData = JSON.parse(localStorage.getItem('courseData')).filter(item=>item.id!=id);
           localStorage.setItem('courseData',JSON.stringify(newData));
           this.courseData = newData;
+          this.total = this.courseData.length;
+          this.nowPageData = this.courseData.slice((this.searchForm.current-1)*this.searchForm.size, this.searchForm.current*this.searchForm.size);
           this.$message({ message: "删除成功！", type: "success" });
         })
         .catch(() => {

@@ -44,14 +44,20 @@ export default {
     };
   },
   created() {
-    this.getInitData();
+    if(!localStorage.getItem('homeData')){
+      this.getInitData();
+    }
+    else{
+      this.initData = JSON.parse(localStorage.getItem('homeData'));
+    }
   },
   methods: {
     // 初始化数据
     async getInitData() {
-      const result = await this.$axios.get("/manage/init");
+      const result = await this.$axios.get("/home/init");
       if (result.data.code===200) {
         Object.assign(this.initData, result.data.data);
+        localStorage.setItem('homeData', JSON.stringify(this.initData));
       } else {
         this.$message.error(result.data.message);
       }

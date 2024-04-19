@@ -151,7 +151,7 @@ export default {
           this.$message.success("注册成功，正在前往首页。。。");
           setTimeout(()=>{
             this.$router.push('/home');
-          },1500);
+          },1000);
         } else {
           return false;
         }
@@ -174,7 +174,7 @@ export default {
             sessionStorage.setItem("nowUser",username);//设置当前用户，防止用户使用此名字注册
             setTimeout(()=>{
               this.$router.push('/home');
-            },1500);
+            },1000);
           }else{
             this.$message.error("用户名或密码错误");
           }
