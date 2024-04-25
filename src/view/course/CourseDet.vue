@@ -1,13 +1,18 @@
 <template>
   <div class="content">
     <el-drawer
-      :title="formData.name"
+      title="课程详情"
       :visible.sync="drawer"
       :before-close="handleClose"
-      :wrapperClosable="false"
       size="40%"
     >
+      <!-- 课程名称 -->
+      <el-divider>课程名称</el-divider>
+      <el-card class="course_info">
+        {{ formData.courseName ? formData.courseName : "Open-Book" }}
+      </el-card>
       <!-- 讲师介绍 -->
+      <el-divider>作者简介</el-divider>
       <el-card class="course_info">
         <el-row type="flex" justify="space-between">
           <el-col :span="6">
@@ -20,31 +25,36 @@
             <h3 style="margin-bottom: -10px;">
               {{ formData.lecturer ? formData.lecturer.name : "Open-Book" }}
               <i
-                style="color: #67c23a; font-size: 25px"
+                style="color: #67c23a; font-size: 20px"
                 class="el-icon-success"
               ></i>
             </h3>
-            <p class="lecturer_desc">
+            <p class="desc">
               {{
                 formData.lecturerDesc
                   ? formData.lecturerDesc
                   : "这位讲师的身世很神秘，什么都没有留下。"
               }}
             </p>
-            <p class="lecturer_desc">
+            <p class="desc">
               {{ formData.fans ? formData.fans : 20010702 }} 粉丝
             </p>
           </el-col>
         </el-row>
       </el-card>
+      <el-divider>课程封面</el-divider>
+
       <!-- 课程封面 -->
-      <div style="width: 96%; margin: 0px auto">
+      <el-card class="course_info">
+        <div style="width: 100%; margin: 0px auto">
         <el-image
           :src="formData.courseUrl"
           fit="contain"
         />
       </div>
+      </el-card>
       <!-- 课程介绍 -->
+      <el-divider>课程简介</el-divider>
       <el-card class="course_info">
         <p>
           {{ formData.courseDesc
@@ -86,8 +96,11 @@ export default {
 .course_info {
   margin: 0px 10px 10px;
 }
-.lecturer_desc {
+.desc {
   color: gray;
   font-size: 14px;
+}
+.content>>>.el-drawer__header {
+  margin-bottom: 15px;
 }
 </style>

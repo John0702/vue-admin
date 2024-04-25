@@ -10,9 +10,9 @@
           class="demo-form-inline"
           inline
         >
-          <el-form-item label="下单人名称:" prop="name">
+          <el-form-item label="下单人名称:" prop="userName">
             <el-input
-              v-model.trim="searchForm.name"
+              v-model.trim="searchForm.userName"
               placeholder="请输入下单人名称"
             />
           </el-form-item>
@@ -67,6 +67,16 @@
           </el-form-item>
         </el-form>
       </el-row>
+      <el-row>
+        <el-col :span="4">
+          <el-button
+            type="primary"
+            size="small"
+            @click="changeView('/order/add')"
+            >新增订单</el-button
+          ></el-col
+        >
+      </el-row>
 
       <!-- 表格 -->
       <el-table ref="table" :data="nowPageData" border stripe>
@@ -93,12 +103,6 @@
         <el-table-column label="操作" width="250">
           <template slot-scope="scope">
             <el-button
-              type="danger"
-              size="small"
-              @click="deleteOrder(scope.row.id)"
-              >删除</el-button
-            >
-            <el-button
               size="small"
               @click="$router.push(`/order/detail?id=${scope.row.id}`)"
               >详情</el-button
@@ -108,6 +112,12 @@
               size="small"
               @click="$router.push(`/order/edit?id=${scope.row.id}`)"
               >编辑</el-button
+            >
+            <el-button
+              type="danger"
+              size="small"
+              @click="deleteOrder(scope.row.id)"
+              >删除</el-button
             >
           </template>
         </el-table-column>
@@ -135,7 +145,8 @@ export default {
       searchForm: {
         current: 1,
         size: 10,
-        name: "",
+        userName: "",
+        courseName: "",
         sex: "",
         phone: "",
         priceRange: {
@@ -145,14 +156,7 @@ export default {
       },
       total: 0,
       orderData: [],
-      nowPageData: [
-        {
-          userName: "",
-          sex: "",
-          id: "",
-          phone: "",
-        },
-      ],
+      nowPageData: [],
     };
   },
   created() {
@@ -165,13 +169,25 @@ export default {
       // 初始化当前页数据
       this.nowPageData = this.orderData.slice(0, this.searchForm.size);
     }
-    window.addEventListener("keydown", (e) => {
-      if (e.key === 'Enter') {
+  },
+  mounted() {
+    document.onkeydown = (e) => {
+      if (e.code == 'Enter') {
         this.handleSearch();
       }
-    });
+    };
+    if(sessionStorage.getItem("orderSearch")) {
+      this.searchForm = JSON.parse(sessionStorage.getItem("orderSearch"));
+      this.handleSearch();
+    }
+  },
+  destroyed() {
+    document.onkeydown = null;
   },
   methods: {
+    updateSearch(){
+      sessionStorage.setItem("orderSearch", JSON.stringify(this.searchForm));
+    },
     async getPageList() {
       const result = await this.$axios.get("/order/list");
       if (result.data.code === 200) {
@@ -224,6 +240,7 @@ export default {
       this.searchForm.current = 1;
       this.total = this.orderData.length;
       this.nowPageData = this.orderData.slice(0, this.searchForm.size);
+      this.updateSearch();
     },
     //重置
     handleReset() {
@@ -234,12 +251,14 @@ export default {
       this.nowPageData = this.orderData.slice(0, this.searchForm.size);
       this.searchForm.priceRange.start = null;
       this.searchForm.priceRange.end = null;
+      this.updateSearch();
     },
     // 切换每页显示条数
     handleSizeChange(val) {
       this.searchForm.size = val;
       this.searchForm.current = 1;
       this.nowPageData = this.orderData.slice(0, val);
+
     },
     // 点击某一页，跳转某一页
     handleCurrentChange(val) {
@@ -278,12 +297,12 @@ export default {
         });
     },
     // 路由跳转
-    // changeView(url, queryParams) {
-    //   this.$router.push({
-    //     path: url,
-    //     query: queryParams,
-    //   });
-    // },
+    changeView(url, queryParams) {
+      this.$router.push({
+        path: url,
+        query: queryParams,
+      });
+    },
   },
 };
 </script>

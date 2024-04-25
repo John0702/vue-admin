@@ -172,6 +172,7 @@ export default {
             sessionStorage.setItem('token',uuid.v4());
             this.$message.success("登录成功，正在前往首页。。。");
             sessionStorage.setItem("nowUser",username);//设置当前用户，防止用户使用此名字注册
+            sessionStorage.setItem("activePath",'/index');
             setTimeout(()=>{
               this.$router.push('/home');
             },1000);

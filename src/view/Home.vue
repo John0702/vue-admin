@@ -13,7 +13,9 @@
                 class="el-dropdown-link"
                 style="color: #fff; cursor: pointer"
               >
-                {{currentUser}} &nbsp;&nbsp;<i class="fa fa-caret-down fa-1x"></i>
+                {{ currentUser }} &nbsp;&nbsp;<i
+                  class="fa fa-caret-down fa-1x"
+                ></i>
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native="editPasswordDialog = true"
@@ -69,8 +71,12 @@
               />
             </el-form-item>
             <el-form-item>
-              <el-button size="small" @click="closeEditPassword()">取 消</el-button>
-              <el-button size="small" type="primary" @click="editPassword()">保 存</el-button>
+              <el-button size="small" @click="closeEditPassword()"
+                >取 消</el-button
+              >
+              <el-button size="small" type="primary" @click="editPassword()"
+                >保 存</el-button
+              >
             </el-form-item>
           </el-form>
         </el-dialog>
@@ -144,7 +150,7 @@ export default {
   components: { Breadcrumb },
   data() {
     return {
-      avatar: require('@/assets/img/open-book.svg'),
+      avatar: require("@/assets/img/open-book.svg"),
       isCollapse: false,
       // 被激活的链接地址,默认是首页
       activePath: "",
@@ -176,12 +182,11 @@ export default {
   },
   watch: {
     $route() {
-      const path = this.$route.path.split('/')[1];
-      const mainPaths=['course','user','order','article'];
-      if(path==='index' || mainPaths.includes(path)){
-        this.activePath = '/'+path+'/list';
-      }
-      else{
+      const path = this.$route.path.split("/")[1];
+      const mainPaths = ["course", "user", "order", "article"];
+      if (mainPaths.includes(path)) {
+        this.activePath = "/" + path + "/list";
+      } else {
         this.activePath = this.$route.path;
       }
       sessionStorage.setItem("activePath", this.activePath);
@@ -197,17 +202,28 @@ export default {
     editPassword() {
       this.$refs.editPasswordForm.validate(async (valid) => {
         if (!valid) return;
-        if (this.editPasswordForm.newPassword != this.editPasswordForm.confirmPassword) {
+        if (
+          this.editPasswordForm.newPassword !=
+          this.editPasswordForm.confirmPassword
+        ) {
           return this.$message.error("两次密码不一致，请重新输入！");
         }
-        if(this.editPasswordForm.oldPassword===sessionStorage.getItem("nowUser")){
-          sessionStorage.setItem(sessionStorage.getItem('nowUser'),this.editPasswordForm.newPassword);
+        if (
+          this.editPasswordForm.oldPassword ===
+          localStorage.getItem(sessionStorage.getItem("nowUser"))
+        ) {
+          localStorage.setItem(
+            sessionStorage.getItem("nowUser"),
+            this.editPasswordForm.newPassword
+          );
           this.$message.success("密码修改成功，请重新登录！");
           sessionStorage.clear();
-          setTimeout(()=>{
+          this.closeEditPassword();
+
+          setTimeout(() => {
             this.$router.push("/login");
-          },1000);
-        }else{
+          }, 1000);
+        } else {
           return this.$message.error("原密码错误，请重新输入！");
         }
       });
@@ -249,7 +265,7 @@ export default {
 }
 
 .el-header {
-  background: linear-gradient(0.25turn,#3f6949,#3f5571);
+  background: linear-gradient(0.25turn, #3f6949, #3f5571);
   padding: 0 10px;
   overflow: hidden;
 }
@@ -276,7 +292,7 @@ export default {
 }
 
 .el-footer:hover {
-  background-image: linear-gradient(0.25turn,#3f6949,#3f5571);
+  background-image: linear-gradient(0.25turn, #3f6949, #3f5571);
   background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
@@ -307,37 +323,38 @@ export default {
   line-height: 50px;
   box-sizing: border-box;
 }
-.el-menu-item:hover,.el-menu-item:focus{
+.el-menu-item:hover,
+.el-menu-item:focus {
   background-color: #dcf5e1;
   color: #3f6949;
 }
 
-* >>> .el-submenu__title:hover{
+* >>> .el-submenu__title:hover {
   background-color: #dcf5e1;
   color: #3f6949;
 }
-*>>> .el-submenu__title{
+* >>> .el-submenu__title {
   height: 50px;
   line-height: 50px;
 }
-*>>>.el-dropdown-menu__item:not(.is-disabled):hover {
+* >>> .el-dropdown-menu__item:not(.is-disabled):hover {
   color: #3f6949;
   background-color: #dcf5e1;
 }
-.el-menu-item{
+.el-menu-item {
   height: 50px;
   line-height: 50px;
 }
-.el-button--default:hover{
+.el-button--default:hover {
   color: #4f7458;
   border-color: #4f7458;
   background-color: #dcf5e1;
 }
-.el-button--primary{
+.el-button--primary {
   background-color: #3f6949;
   border-color: #3f6949;
 }
-*>>>.el-input__inner:focus{
+* >>> .el-input__inner:focus {
   border-color: #3f6949;
 }
 </style>

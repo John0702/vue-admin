@@ -1,57 +1,63 @@
 <template>
   <div class="content">
     <el-drawer
-      :title="formData.name"
+      title="文章详情"
       :visible.sync="drawer"
       :before-close="handleClose"
-      :wrapperClosable="false"
       size="40%"
     >
-      <!-- 讲师介绍 -->
-      <el-card class="course_info">
+      <!-- 文章名称 -->
+      <el-divider>文章名称</el-divider>
+      <el-card class="article_info">
+        {{ formData.title ? formData.title : "Open-Book" }}
+      </el-card>
+      <!-- 作者简介 -->
+      <el-divider>作者简介</el-divider>
+
+      <el-card class="article_info">
         <el-row type="flex" justify="space-between">
           <el-col :span="6">
             <img
               style="width: 80px; height: 80px; margin-top: 20px"
-              src='../../assets/img/open-book.svg'
+              src="../../assets/img/open-book.svg"
             />
           </el-col>
           <el-col :span="16">
-            <h3 style="margin-bottom: -10px;">
-              {{ formData.lecturer ? formData.lecturer.name : "Open-Book" }}
+            <h3 style="margin-bottom: -10px">
+              {{ formData.author ? formData.author : "Open-Book" }}
               <i
                 style="color: #67c23a; font-size: 25px"
                 class="el-icon-success"
               ></i>
             </h3>
-            <p class="lecturer_desc">
+            <p class="desc">
               {{
-                formData.lecturerDesc
-                  ? formData.lecturerDesc
-                  : "这位讲师的身世很神秘，什么都没有留下。"
+                formData.authorDesc
+                  ? formData.authorDesc
+                  : "这位作者的身世很神秘，什么都没有留下。"
               }}
             </p>
-            <p class="lecturer_desc">
-              {{ formData.fans ? formData.fans : 20010702 }} 粉丝
+            <p class="desc">
+              浏览量 {{ formData.pv ? formData.pv : 20010702 }}
             </p>
           </el-col>
         </el-row>
       </el-card>
-      <!-- 课程封面 -->
-      <div style="width: 96%; margin: 0px auto">
-        <el-image
-          :src="formData.courseUrl"
-          fit="contain"
-        />
-      </div>
-      <!-- 课程介绍 -->
-      <el-card class="course_info">
+      <!-- 文章封面 -->
+      <el-divider>文章封面</el-divider>
+      <el-card class="article_info">
+        <div style="width: 100%; margin: 0px auto">
+          <el-image :src="formData.articleUrl" fit="contain" />
+        </div>
+      </el-card>
+      <!-- 文章简介 -->
+      <el-divider>文章简介</el-divider>
+      <el-card class="article_info">
         <p>
-          {{ formData.courseDesc
-            ? formData.courseDesc
-            : "暂无简介" }}
+          {{ formData.articleDesc ? formData.articleDesc : "暂无简介" }}
         </p>
       </el-card>
+      <div class="updateTime">更新时间：{{  formData.updateTime }}</div>
     </el-drawer>
   </div>
 </template>
@@ -66,11 +72,10 @@ export default {
       },
     };
   },
-  created(){
-  },
+  created() {},
   methods: {
-    getCourseDetail() {
-      const det=JSON.parse(localStorage.getItem("courseData")).find(
+    getArticleDetail() {
+      const det = JSON.parse(localStorage.getItem("articleData")).find(
         (item) => item.id === this.formData.id
       );
       this.formData = det;
@@ -83,11 +88,20 @@ export default {
 </script>
 
 <style scoped>
-.course_info {
+.article_info {
   margin: 0px 10px 10px;
 }
-.lecturer_desc {
+.desc {
   color: gray;
   font-size: 14px;
+}
+.content >>> .el-drawer__header {
+  margin-bottom: 15px;
+}
+.updateTime{
+  text-align: right;
+  color: gray;
+  font-size: small;
+  padding: 5px;
 }
 </style>
