@@ -17,9 +17,9 @@
       <div style="text-align: center">
         <el-avatar
           :size="150"
-          :src="require('../../assets/img/open-book.svg')"
+          :src="userInfo.avatar"
         ></el-avatar>
-        <h2 style="margin: 10px 0px">{{ userInfo.name ? userInfo.name : "空" }}</h2>
+        <h2 style="margin: 10px 0px">{{ userInfo.userName ? userInfo.userName : "空" }}</h2>
         <span
           style="
             border-right: 2px solid #d2d2d2;
@@ -46,7 +46,7 @@
       <el-descriptions class="margin-top" :column="3">
         <el-descriptions-item>
           <template slot="label"> 姓名 </template>
-          {{ userInfo.name ? userInfo.name : "无" }}
+          {{ userInfo.userName ? userInfo.userName : "无" }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 英文名 </template>

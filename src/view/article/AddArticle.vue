@@ -2,46 +2,37 @@
   <div class="content">
     <el-card>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="课程名称:" prop="name">
-          <el-input v-model="form.name" placeholder="请输入课程名称"></el-input>
+        <el-form-item label="文章名称:" prop="title">
+          <el-input
+            v-model="form.title"
+            placeholder="请输入文章名称"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="课程分类:" prop="category">
-          <el-cascader
-            placeholder="请选择课程分类"
+        <el-form-item label="文章编号:" prop="code">
+          <el-input v-model="form.code" placeholder="请输入文章编号"></el-input>
+        </el-form-item>
+        <el-form-item label="作者:" prop="author">
+          <el-input
+            v-model="form.author"
+            placeholder="请输入文章作者"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="作者简介:">
+          <el-input
             style="width: 440px"
-            v-model="form.category"
-            :options="categoryList"
-          ></el-cascader>
+            maxlength="1000"
+            show-word-limit
+            type="textarea"
+            v-model="form.authorDesc"
+            placeholder="请输入作者简介"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="课程售价:">
-          <el-input-number
-            v-model="form.price"
-            :min="1"
-            :max="9999"
-            :step="1"
-            :precision="2"
-          ></el-input-number>
-        </el-form-item>
-        <el-form-item label="课程讲师:" prop="lecturer">
-          <el-select
-            v-model="form.lecturer.name"
-            @change="handleLecChange"
-            placeholder="请选择讲师"
-          >
-            <el-option
-              v-for="item in lecturerList"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="课程封面:">
+        <el-form-item label="文章封面:">
           <el-upload
             ref="upload"
-            action="/open-book/course/upload"
+            action="/open-book/article/upload"
             list-type="picture-card"
-            :file-list="[form.courseUrl]"
+            :file-list="[form.articleUrl]"
             :limit="1"
             accept=".png, .jpeg, .jpg, .gif, .svg, .bmp, .webp"
             :on-change="uploadFile"
@@ -49,8 +40,9 @@
             :on-error="uploadError"
             :on-preview="handlePictureCardPreview"
           >
-            <span slot="default">{{form.id?'更新课程封面':'上传课程封面'}}</span>
-
+            <span slot="default">{{
+              form.id ? "更新文章封面" : "上传文章封面"
+            }}</span>
             <div slot="tip" class="el-upload__tip">
               支持扩展名：.png .jpeg .jpg .gif .svg .bmp .webp ，文件大小限制
               10M。
@@ -60,14 +52,14 @@
             <img width="100%" :src="dialogImageUrl" alt="" />
           </el-dialog>
         </el-form-item>
-        <el-form-item label="课程简介" prop="desc">
+        <el-form-item label="文章简介">
           <el-input
             style="width: 440px"
             maxlength="1000"
             show-word-limit
             type="textarea"
-            v-model="form.courseDesc"
-            placeholder="请输入课程简介"
+            v-model="form.articleDesc"
+            placeholder="请输入文章简介"
           ></el-input>
         </el-form-item>
         <el-form-item>
@@ -82,93 +74,41 @@
 <script>
 const Mock = require("mockjs");
 const Random = Mock.Random;
+import dateTransform from "@/utils/dateTransform";
 export default {
   data() {
     return {
       emptyUrl: require("@/assets/img/emptyUrl.png"),
-      newCourseUrl: "",
+      newArticleUrl: "",
       dialogVisible: false,
       dialogImageUrl: "",
       form: {
-        id: "",
-        name: "",
+        title: "",
         code: "",
-        lecturer: {
-          id: "",
-          name: "",
-        },
-        category: [],
-        price: "",
-        courseDesc: "",
-        courseUrl: "",
-      },
-      categoryList: [
-        {
-          value: "1",
-          label: "前端",
-          children: [
-            { value: "1-1", label: "html5" },
-            { value: "1-2", label: "vue" },
-            { value: "1-3", label: "node" },
-            { value: "1-4", label: "react" },
-            { value: "1-5", label: "javascript" },
-          ],
-        },
-        {
-          value: "2",
-          label: "后端",
-          children: [
-            { value: "2-1", label: "springboot" },
-            { value: "2-2", label: "微服务" },
-            { value: "2-3", label: "Redis" },
-          ],
-        },
-        {
-          value: "3",
-          label: "移动端",
-          children: [
-            { value: "3-1", label: "iOS" },
-            { value: "3-2", label: "Android" },
-            { value: "3-3", label: "Flutter" },
-          ],
-        },
-      ],
-      lecturerList: [
-        { id: 123123, name: "尤雨溪" },
-        { id: 123124, name: "OB最强讲师" },
-        { id: 123125, name: "J神讲JS" },
-      ],
-      cascaderProps: {
-        value: "id",
-        label: "name",
-        children: "child",
+        articleUrl: "",
+        pv: "",
+        articleDesc: "",
+        authorDesc: "",
       },
       rules: {
-        name: [
+        title: [
           {
             required: true,
-            message: "请输入课程名称",
+            message: "请输入文章名称",
             trigger: "blur",
           },
         ],
-        category: [
+        code: [
           {
             required: true,
-            message: "请选择课程分类",
+            message: "请输入文章编号",
             trigger: "change",
           },
         ],
-        lecturer: [
+        author: [
           {
             required: true,
-            message: "请选择课程分类",
-            trigger: "change",
-          },
-        ],
-        courseDesc: [
-          {
-            required: true,
-            message: "请输入课程简介",
+            message: "请输入作者",
             trigger: "blur",
           },
         ],
@@ -176,21 +116,20 @@ export default {
     };
   },
   created() {
-    // this.getCourseCategory();
+    // this.getarticleCategory();
     if (this.$route.query.id) {
-      this.getCourseDetail(this.$route.query.id);
+      this.getArticleDetail(this.$route.query.id);
     }
   },
   methods: {
     handlePictureCardPreview(file) {
-      console.log(1);
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
     uploadFile(file) {
       let reader = new FileReader();
       reader.onload = () => {
-        this.newCourseUrl = reader.result;
+        this.newArticleUrl = reader.result;
       };
       reader.readAsDataURL(file.raw);
     },
@@ -200,42 +139,44 @@ export default {
     uploadError() {
       this.$message.error("上传失败");
     },
-    // 获取课程详情
-    getCourseDetail(id) {
-      const data = JSON.parse(localStorage.getItem("courseData")).find(
+    // 获取文章详情
+    getArticleDetail(id) {
+      const data = JSON.parse(localStorage.getItem("articleData")).find(
         (item) => item.id == id
       );
       this.form = data;
     },
-    // 新增/编辑课程内容
+    // 新增/编辑文章内容
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let type = this.$route.query.id ? "edit" : "add";
           // 新增
           if (type == "add") {
-            this.form.id = new Date().getTime();
             this.form.code = Random.string("number", 8);
-            this.form.state = "off";
-            this.form.stateName = "未上架";
-            this.form.courseUrl = this.newCourseUrl?this.newCourseUrl:this.emptyUrl;
+            this.form.articleUrl = this.newArticleUrl
+              ? this.newArticleUrl
+              : this.emptyUrl;
 
             let newData = this.form;
             localStorage.setItem(
-              "courseData",
+              "articleData",
               JSON.stringify([
                 newData,
-                ...JSON.parse(localStorage.getItem("courseData")),
+                ...JSON.parse(localStorage.getItem("articleData")),
               ])
             );
             this.$message.success("新增成功");
             this.$router.back();
           } else {
             // 编辑
-            if (this.newCourseUrl) {
-              this.form.courseUrl = this.newCourseUrl;
+            if (this.newArticleUrl) {
+              this.form.articleUrl = this.newArticleUrl;
             }
-            let newData = JSON.parse(localStorage.getItem("courseData")).map(
+            this.form.updateTime = dateTransform(new Date());
+            this.form.pv = 0;
+            console.log(this.form);
+            let newData = JSON.parse(localStorage.getItem("articleData")).map(
               (item) => {
                 if (item.id == this.form.id) {
                   return this.form;
@@ -244,7 +185,7 @@ export default {
                 }
               }
             );
-            localStorage.setItem("courseData", JSON.stringify(newData));
+            localStorage.setItem("articleData", JSON.stringify(newData));
             this.$message.success("编辑成功");
             this.$router.back();
           }
@@ -257,7 +198,7 @@ export default {
       this.form.lecturer = this.lecturerList.find((item) => item.id == value);
     },
     handleBack() {
-      this.form.courseUrl = this.newCourseUrl;
+      this.form.articleUrl = this.newArticleUrl;
       this.$router.back();
     },
   },

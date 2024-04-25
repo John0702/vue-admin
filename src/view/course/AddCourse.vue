@@ -3,7 +3,7 @@
     <el-card>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="课程名称:" prop="name">
-          <el-input v-model="form.name" placeholder="请输入课程名称"></el-input>
+          <el-input v-model="form.courseName" placeholder="请输入课程名称"></el-input>
         </el-form-item>
         <el-form-item label="课程分类:" prop="category">
           <el-cascader
@@ -183,7 +183,6 @@ export default {
   },
   methods: {
     handlePictureCardPreview(file) {
-      console.log(1);
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },

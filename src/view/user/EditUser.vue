@@ -7,7 +7,7 @@
     </div>
     <el-form label-width="80px">
       <el-form-item label="姓名">
-        <el-input v-model="user.name"></el-input>
+        <el-input v-model="user.userName"></el-input>
       </el-form-item>
       <el-form-item label="英文名">
         <el-input v-model="user.EnglishName"></el-input>
@@ -24,6 +24,30 @@
       <el-form-item label="年龄">
         <el-input v-model="user.age"></el-input>
       </el-form-item>
+      <el-form-item label="头像:">
+          <el-upload
+            ref="upload"
+            action="/open-book/user/upload"
+            list-type="picture-card"
+            :file-list="[user.avatar]"
+            :limit="1"
+            accept=".png, .jpeg, .jpg, .gif, .svg, .bmp, .webp"
+            :on-change="uploadFile"
+            :on-success="uploadSuccess"
+            :on-error="uploadError"
+            :on-preview="handlePictureCardPreview"
+          >
+            <span slot="default">更新头像</span>
+
+            <div slot="tip" class="el-upload__tip">
+              支持扩展名：.png .jpeg .jpg .gif .svg .bmp .webp ，文件大小限制
+              10M。
+            </div>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="" />
+          </el-dialog>
+        </el-form-item>
       <el-form-item label="联系地址">
         <el-input v-model="user.address"></el-input>
       </el-form-item>
@@ -47,7 +71,11 @@
 export default {
   data(){
     return {
-      user:{}
+      user:{},
+      emptyAvatar: require("@/assets/img/open-book.svg"),
+      newAvatar: '',
+      dialogVisible: false,
+      dialogImageUrl: "",
     }
   },
   created(){
@@ -55,12 +83,32 @@ export default {
     this.getUserDetail(this.user.id);
   },
   methods:{
+    uploadFile(file) {
+      let reader = new FileReader();
+      reader.onload = () => {
+        this.newAvatar = reader.result;
+      };
+      reader.readAsDataURL(file.raw);
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    uploadSuccess() {
+      this.$message.success("上传成功");
+    },
+    uploadError() {
+      this.$message.error("上传失败");
+    },
     getUserDetail(id){
       // 通过id获取用户信息
       this.user = JSON.parse(localStorage.getItem('userData')).find(item=>item.id==id);
     },
     editUser(id){
       // 编辑用户信息
+      if(this.newAvatar){
+        this.user.avatar = this.newAvatar;
+      }
       let userData = JSON.parse(localStorage.getItem('userData'));
       userData = userData.map(item=>{
         if(item.id == id){
@@ -94,5 +142,10 @@ export default {
   color: #4f7458;
   border-color: #dcf5e1;
   background-color: #dcf5e1;
+}
+.content >>> .el-upload--picture-card:hover,
+.content >>> .el-upload:focus {
+  border-color: #4f7458;
+  color: #4f7458;
 }
 </style>

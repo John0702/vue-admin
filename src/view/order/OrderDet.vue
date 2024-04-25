@@ -7,11 +7,12 @@
           返回</el-button
         >
         <el-button
-          style="float: right;margin-right: 10px"
+          style="float: right; margin-right: 10px"
           size="small"
           type="primary"
           @click="$router.push(`/order/edit?id=${orderInfo.id}`)"
-          >编辑</el-button>
+          >编辑</el-button
+        >
       </div>
       <el-divider></el-divider>
       <el-descriptions class="margin-top" :column="3">
@@ -25,11 +26,30 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 下单手机号 </template>
-          {{ orderInfo.phone ? orderInfo.phone : 'empty' }}
+          {{ orderInfo.phone ? orderInfo.phone : "empty" }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label"> 订单号 </template>
+          {{ orderInfo.id ? orderInfo.id : "暂无" }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label"> 联系地址 </template>
+          {{ orderInfo.address ? orderInfo.address : "暂无" }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 课程名称 </template>
           {{ orderInfo.courseName ? orderInfo.courseName : 22 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label"> 课程封面 </template>
+          <el-popover placement="right" trigger="hover">
+            <el-image :src="orderInfo.courseUrl" fit="contain" />
+            <el-image
+              slot="reference"
+              :src="orderInfo.courseUrl"
+              fit="contain"
+            />
+          </el-popover>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 课程价格 </template>
@@ -41,7 +61,11 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 支付方式 </template>
-          <el-tag size="mini" :type="orderInfo.payType=='wechat'?'default':'primary'">{{ orderInfo.payType=='alipay'?'支付宝':'微信支付' }}</el-tag>
+          <el-tag
+            size="mini"
+            :type="orderInfo.payType == 'wechat' ? 'default' : 'primary'"
+            >{{ orderInfo.payType == "alipay" ? "支付宝" : "微信支付" }}</el-tag
+          >
         </el-descriptions-item>
       </el-descriptions>
     </el-card>
@@ -63,7 +87,9 @@ export default {
   },
   methods: {
     getUserDetail() {
-      this.orderInfo=JSON.parse(localStorage.getItem('orderData')).find(item=>item.id==this.orderInfo.id);
+      this.orderInfo = JSON.parse(localStorage.getItem("orderData")).find(
+        (item) => item.id == this.orderInfo.id
+      );
     },
   },
 };
@@ -81,11 +107,11 @@ export default {
 .el-tag {
   margin-left: 5px;
 }
-.el-button.el-button--default.el-button--small:hover{
+.el-button.el-button--default.el-button--small:hover {
   color: #4f7458;
   background-color: #dcf5e1;
 }
-.el-button.el-button--primary.el-button--small{
+.el-button.el-button--primary.el-button--small {
   color: white;
   border-color: #3f6949;
   background-color: #3f6949;

@@ -88,6 +88,20 @@ const router = new Router({
           component:()=>import('@/view/article/Index.vue')
         },
         {
+          path:'/article/edit',
+          meta:{
+            title:'文章编辑'
+          },
+          component:()=>import('@/view/article/AddArticle.vue')
+        },
+        {
+          path:'/article/add',
+          meta:{
+            title:'新增文章'
+          },
+          component:()=>import('@/view/article/AddArticle.vue')
+        },
+        {
           path:'/order/list',
           meta:{
             title:'订单管理'
@@ -105,6 +119,13 @@ const router = new Router({
           path:'/order/edit',
           meta:{
             title:'订单编辑'
+          },
+          component:()=>import('@/view/order/EditOrder.vue')
+        },
+        {
+          path:'/order/add',
+          meta:{
+            title:'新增订单'
           },
           component:()=>import('@/view/order/EditOrder.vue')
         }

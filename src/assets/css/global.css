@@ -41,3 +41,41 @@
 .el-cascader-node.in-active-path, .el-cascader-node.is-active, .el-cascader-node.is-selectable.in-checked-path{
   color: #4f7458 !important;
 }
+
+.datePicker .el-input__inner:focus{
+  border-color: #4f7458;
+}
+.datePicker .el-date-picker__header-label:hover{
+  color: #4f7458;
+}
+.datePicker .el-date-table td.current:not(.disabled) span{
+  background-color: #4f7458;
+}
+.datePicker .el-date-table td.available:hover{
+  color: #4f7458;
+}
+.datePicker .el-date-table td.today span{
+  color: #4f7458;
+}
+.datePicker .el-button--text,
+.datePicker .el-button--text:hover,
+.datePicker .el-button--text:focus{
+  color: #4f7458;
+}
+.datePicker .el-button.is-plain:focus,
+.datePicker .el-button.is-plain:hover{
+  border-color: #4f7458;
+  color: #4f7458;
+}
+.datePicker .el-picker-panel__icon-btn:hover{
+  color: #4f7458;
+}
+.datePicker .el-month-table td.current:not(.disabled) .cell,
+.datePicker .el-month-table td .cell:hover{
+  color: #4f7458;
+}
+.datePicker .el-year-table td.current:not(.disabled) .cell,
+.datePicker .el-year-table td .cell:hover{
+  color: #4f7458;
+}
+
