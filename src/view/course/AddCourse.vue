@@ -2,7 +2,7 @@
   <div class="content">
     <el-card>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="课程名称:" prop="name">
+        <el-form-item label="课程名称:" prop="courseName">
           <el-input v-model="form.courseName" placeholder="请输入课程名称"></el-input>
         </el-form-item>
         <el-form-item label="课程分类:" prop="category">

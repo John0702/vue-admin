@@ -79,7 +79,13 @@
       </el-row>
 
       <!-- 表格 -->
-      <el-table ref="table" :data="nowPageData" border stripe>
+      <el-table
+        ref="table"
+        :data="nowPageData"
+        border
+        stripe
+        @sort-change="onSortChange"
+      >
         <el-table-column type="index" label="序号" width="50" />
         <el-table-column prop="userName" label="下单人" show-overflow-tooltip />
         <el-table-column prop="sex" label="性别" show-overflow-tooltip />
@@ -98,7 +104,9 @@
         <el-table-column
           prop="coursePrice"
           label="课程价格"
+          sortable="custom"
           show-overflow-tooltip
+          width="120"
         />
         <el-table-column label="操作" width="250">
           <template slot-scope="scope">
@@ -172,11 +180,11 @@ export default {
   },
   mounted() {
     document.onkeydown = (e) => {
-      if (e.code == 'Enter') {
+      if (e.code == "Enter") {
         this.handleSearch();
       }
     };
-    if(sessionStorage.getItem("orderSearch")) {
+    if (sessionStorage.getItem("orderSearch")) {
       this.searchForm = JSON.parse(sessionStorage.getItem("orderSearch"));
       this.handleSearch();
     }
@@ -185,7 +193,21 @@ export default {
     document.onkeydown = null;
   },
   methods: {
-    updateSearch(){
+    onSortChange({ prop, order }) {
+      let tmpData = JSON.parse(localStorage.getItem("orderData"));
+      if (order === "ascending") {
+        this.orderData.sort((a, b) => a[prop] - b[prop]);
+      } else if (order === "descending") {
+        this.orderData.sort((a, b) => b[prop] - a[prop]);
+      } else {
+        this.orderData = tmpData;
+      }
+      this.nowPageData = this.orderData.slice(
+        (this.searchForm.current - 1) * this.searchForm.size,
+        this.searchForm.current * this.searchForm.size
+      );
+    },
+    updateSearch() {
       sessionStorage.setItem("orderSearch", JSON.stringify(this.searchForm));
     },
     async getPageList() {
@@ -258,7 +280,6 @@ export default {
       this.searchForm.size = val;
       this.searchForm.current = 1;
       this.nowPageData = this.orderData.slice(0, val);
-
     },
     // 点击某一页，跳转某一页
     handleCurrentChange(val) {

@@ -73,9 +73,19 @@
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table ref="table" :data="nowPageData" border stripe>
+      <el-table
+        ref="table"
+        :data="nowPageData"
+        border
+        stripe
+        @sort-change="onSortChange"
+      >
         <el-table-column type="index" label="序号" width="50" />
-        <el-table-column prop="courseName" label="课程名称" show-overflow-tooltip />
+        <el-table-column
+          prop="courseName"
+          label="课程名称"
+          show-overflow-tooltip
+        />
         <el-table-column prop="code" label="课程编号" show-overflow-tooltip />
         <el-table-column prop="courseUrl" label="课程封面" width="100">
           <template slot-scope="scope">
@@ -101,7 +111,13 @@
           label="讲师"
           show-overflow-tooltip
         />
-        <el-table-column prop="price" label="课程售价" show-overflow-tooltip />
+        <el-table-column
+          prop="price"
+          label="课程售价"
+          sortable="custom"
+          show-overflow-tooltip
+          width="120"
+        />
         <el-table-column prop="stateName" label="状态" show-overflow-tooltip />
         <el-table-column label="操作" width="360">
           <template slot-scope="scope">
@@ -117,7 +133,7 @@
               size="small"
               v-show="scope.row.state == 'off'"
               @click="changeCourseStatus(scope.row.id)"
-              style="margin-left: 0px;"
+              style="margin-left: 0px"
               >上架</el-button
             >
             <el-button size="small" @click="openDetail(scope.row.id)"
@@ -191,16 +207,30 @@ export default {
     if (!localStorage.getItem("courseData")) {
       this.getPageList();
     } else {
-      this.courseData = JSON.parse(localStorage.getItem("courseData"));
-      // 初始化总条数
-      this.total = this.courseData.length;
-      // 初始化当前页数据
-      this.nowPageData = this.courseData.slice(0, this.searchForm.size);
+      if (
+        JSON.parse(localStorage.getItem(sessionStorage.getItem("nowUser")))
+          .permission === "user"
+      ) {
+        // 从courseData中随机抽取10条数据
+        let data = JSON.parse(localStorage.getItem("courseData"));
+        let newData = data.splice(0, 10);
+        this.courseData = newData;
+        // 初始化总条数
+        this.total = this.courseData.length;
+        // 初始化当前页数据
+        this.nowPageData = this.courseData.slice(0, this.searchForm.size);
+      } else {
+        this.courseData = JSON.parse(localStorage.getItem("courseData"));
+        // 初始化总条数
+        this.total = this.courseData.length;
+        // 初始化当前页数据
+        this.nowPageData = this.courseData.slice(0, this.searchForm.size);
+      }
     }
   },
   mounted() {
     document.onkeydown = (e) => {
-      if (e.code == 'Enter') {
+      if (e.code == "Enter") {
         this.handleSearch();
       }
     };
@@ -214,7 +244,21 @@ export default {
     document.onkeydown = null;
   },
   methods: {
-    updateSearch(){
+    onSortChange({ prop, order }) {
+      let tmpData = JSON.parse(localStorage.getItem("courseData"));
+      if (order === "ascending") {
+        this.courseData.sort((a, b) => a[prop] - b[prop]);
+      } else if (order === "descending") {
+        this.courseData.sort((a, b) => b[prop] - a[prop]);
+      } else {
+        this.courseData = tmpData;
+      }
+      this.nowPageData = this.courseData.slice(
+        (this.searchForm.current - 1) * this.searchForm.size,
+        this.searchForm.current * this.searchForm.size
+      );
+    },
+    updateSearch() {
       sessionStorage.setItem("courseSearch", JSON.stringify(this.searchForm));
     },
     async getPageList() {

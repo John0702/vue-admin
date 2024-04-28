@@ -102,6 +102,7 @@
             <el-menu-item
               index="/user/list"
               @click="saveActiveNav('/user/list')"
+              :disabled="!permission"
             >
               <i class="el-icon-user"></i>
               <span slot="title">用户管理</span>
@@ -109,6 +110,7 @@
             <el-menu-item
               index="/order/list"
               @click="saveActiveNav('/order/list')"
+              :disabled="!permission"
             >
               <i class="el-icon-tickets"></i>
               <span slot="title">订单管理</span>
@@ -150,6 +152,7 @@ export default {
   components: { Breadcrumb },
   data() {
     return {
+      permission: false,
       avatar: require("@/assets/img/open-book.svg"),
       isCollapse: false,
       // 被激活的链接地址,默认是首页
@@ -179,6 +182,11 @@ export default {
       ? sessionStorage.getItem("activePath")
       : "/index";
     this.currentUser = sessionStorage.getItem("nowUser");
+    this.permission =
+      JSON.parse(localStorage.getItem(sessionStorage.getItem("nowUser")))
+        .permission === "admin"
+        ? true
+        : false;
   },
   watch: {
     $route() {
@@ -210,11 +218,15 @@ export default {
         }
         if (
           this.editPasswordForm.oldPassword ===
-          localStorage.getItem(sessionStorage.getItem("nowUser"))
+          JSON.parse(localStorage.getItem(sessionStorage.getItem("nowUser")))
+            .password
         ) {
           localStorage.setItem(
             sessionStorage.getItem("nowUser"),
-            this.editPasswordForm.newPassword
+            JSON.stringify({
+              ...JSON.parse(localStorage.getItem(sessionStorage.getItem("nowUser"))),
+              password: this.editPasswordForm.newPassword,
+            })
           );
           this.$message.success("密码修改成功，请重新登录！");
           sessionStorage.clear();

@@ -56,10 +56,26 @@
         >
       </el-row>
       <!-- 表格 -->
-      <el-table ref="table" :data="nowPageData" border stripe>
+      <el-table
+        ref="table"
+        :data="nowPageData"
+        border
+        stripe
+        @sort-change="onSortChange"
+      >
         <el-table-column type="index" label="序号" width="50" />
-        <el-table-column prop="title" label="文章名称" show-overflow-tooltip />
-        <el-table-column prop="code" label="文章编号" show-overflow-tooltip />
+        <el-table-column
+          prop="title"
+          label="文章名称"
+          show-overflow-tooltip
+          width="120"
+        />
+        <el-table-column
+          prop="code"
+          label="文章编号"
+          show-overflow-tooltip
+          width="120"
+        />
         <el-table-column prop="articleUrl" label="文章封面" width="100">
           <template slot-scope="scope">
             <div>
@@ -80,7 +96,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="author" label="作者" show-overflow-tooltip />
-        <el-table-column prop="pv" label="浏览数" show-overflow-tooltip />
+        <el-table-column
+          prop="pv"
+          label="浏览数"
+          sortable="custom"
+          show-overflow-tooltip
+          width="100"
+        />
         <el-table-column label="操作" width="360">
           <template slot-scope="scope">
             <el-button size="small" @click="openDetail(scope.row.id)"
@@ -148,16 +170,30 @@ export default {
     if (!localStorage.getItem("articleData")) {
       this.getPageList();
     } else {
-      this.articleData = JSON.parse(localStorage.getItem("articleData"));
-      // 初始化总条数
-      this.total = this.articleData.length;
-      // 初始化当前页数据
-      this.nowPageData = this.articleData.slice(0, this.searchForm.size);
+      if (
+        JSON.parse(localStorage.getItem(sessionStorage.getItem("nowUser")))
+          .permission === "user"
+      ) {
+        // 从articleData中随机抽取10条数据
+        let data = JSON.parse(localStorage.getItem("articleData"));
+        let newData = data.splice(0, 10);
+        this.articleData = newData;
+        // 初始化总条数
+        this.total = this.articleData.length;
+        // 初始化当前页数据
+        this.nowPageData = this.articleData.slice(0, this.searchForm.size);
+      } else {
+        this.articleData = JSON.parse(localStorage.getItem("articleData"));
+        // 初始化总条数
+        this.total = this.articleData.length;
+        // 初始化当前页数据
+        this.nowPageData = this.articleData.slice(0, this.searchForm.size);
+      }
     }
   },
   mounted() {
     document.onkeydown = (e) => {
-      if (e.code == 'Enter') {
+      if (e.code == "Enter") {
         this.handleSearch();
       }
     };
@@ -171,7 +207,21 @@ export default {
     document.onkeydown = null;
   },
   methods: {
-    updateSearch(){
+    onSortChange({ prop, order }) {
+      let tmpData = JSON.parse(localStorage.getItem("articleData"));
+      if (order === "ascending") {
+        this.articleData.sort((a, b) => a[prop] - b[prop]);
+      } else if (order === "descending") {
+        this.articleData.sort((a, b) => b[prop] - a[prop]);
+      } else {
+        this.articleData = tmpData;
+      }
+      this.nowPageData = this.articleData.slice(
+        (this.searchForm.current - 1) * this.searchForm.size,
+        this.searchForm.current * this.searchForm.size
+      );
+    },
+    updateSearch() {
       sessionStorage.setItem("articleSearch", JSON.stringify(this.searchForm));
     },
     async getPageList() {

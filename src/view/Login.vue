@@ -5,10 +5,10 @@
       <el-image class="logo_image" :src="logo_url" fit="cover"></el-image>
       <p class="login_desc">欢迎登录OB课程管理系统</p>
 
-      <el-form ref="ruleForm" :model="form" :rules="rules" >
+      <el-form ref="ruleForm" :model="form" :rules="rules">
         <el-form-item prop="username">
           <el-input
-            placeholder="请输入管理员账号"
+            placeholder="请输入账号"
             v-model.trim="form.username"
             prefix-icon="el-icon-user"
           />
@@ -16,7 +16,7 @@
         <el-form-item prop="password">
           <el-input
             show-password
-            placeholder="请输入管理员密码"
+            placeholder="请输入密码"
             v-model.trim="form.password"
             prefix-icon="el-icon-lock"
           />
@@ -25,7 +25,7 @@
           <el-input
             v-model.trim="form.passwordConfirm"
             show-password
-            placeholder="请再次输入管理员密码"
+            placeholder="请再次输入密码"
             prefix-icon="el-icon-lock"
           />
         </el-form-item>
@@ -34,14 +34,14 @@
             v-if="!isReg"
             :loading="loginLoading"
             class="btn"
-            style="margin-bottom: 10px;"
+            style="margin-bottom: 10px"
             @click="login('ruleForm')"
             >登录</el-button
           >
           <el-button
             v-if="!isReg"
             :loading="loginLoading"
-            style="margin-left: 0px;"
+            style="margin-left: 0px"
             class="btn"
             @click="changeReg"
             >去注册</el-button
@@ -50,7 +50,7 @@
             v-if="isReg"
             :loading="loginLoading"
             class="btn"
-            style="margin-bottom: 10px;"
+            style="margin-bottom: 10px"
             @click="registerAndLogin"
             >注册并登陆</el-button
           >
@@ -58,7 +58,7 @@
             v-if="isReg"
             :loading="loginLoading"
             class="btn"
-            style="margin-left: 0px;"
+            style="margin-left: 0px"
             @click="changeReg"
             >返回</el-button
           >
@@ -108,50 +108,63 @@ export default {
         passwordConfirm: "",
       },
       loginLoading: false,
-      isReg:false,
+      isReg: false,
       rules: {
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
         ],
-        password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
-        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         passwordConfirm: [
           { required: true, message: "请再次输入密码", trigger: "blur" },
         ],
       },
     };
   },
-  mounted(){
+  created() {
+    if (localStorage.getItem("admin") === null) {
+      localStorage.setItem(
+        "admin",
+        JSON.stringify({ password: "admin", permission: "admin" })
+      );
+    }
+  },
+  mounted() {
     document.onkeydown = (e) => {
-      if (e.key === 'Enter') {
-        this.isReg?this.registerAndLogin():this.enterLogin();
+      if (e.key === "Enter") {
+        this.isReg ? this.registerAndLogin() : this.enterLogin();
       }
     };
   },
   methods: {
-    changeReg(){
+    changeReg() {
       this.$refs.ruleForm.resetFields();
-      this.isReg=!this.isReg;
+      this.isReg = !this.isReg;
     },
-    registerAndLogin(){
+    registerAndLogin() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          if(this.form.password!==this.form.passwordConfirm){
+          if (this.form.password !== this.form.passwordConfirm) {
             this.$message.error("两次密码输入不一致");
             return;
           }
-          if(localStorage.getItem(this.form.username)!==null){
+          if (localStorage.getItem(this.form.username) !== null) {
             this.$message.error("用户已注册，请直接登录");
             return;
           }
-          localStorage.setItem(this.form.username,this.form.password);
-          sessionStorage.setItem('token',uuid.v4());
-          sessionStorage.setItem("nowUser",this.form.username);//设置当前用户，防止用户使用此名字注册
+          if (this.form.username === "admin") {
+            this.$message.error("用户名已存在，请更换用户名");
+            return;
+          }
+          localStorage.setItem(
+            this.form.username,
+            JSON.stringify({ password: this.form.password, permission: "user" })
+          );
+          sessionStorage.setItem("token", uuid.v4());
+          sessionStorage.setItem("nowUser", this.form.username); //设置当前用户，防止用户使用此名字注册
           this.$message.success("注册成功，正在前往首页。。。");
-          setTimeout(()=>{
-            this.$router.push('/home');
-          },1000);
+          setTimeout(() => {
+            this.$router.push("/home");
+          }, 1000);
         } else {
           return false;
         }
@@ -161,22 +174,24 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 业务逻辑
-          const model=this.$refs[formName].model;
-          const {username,password}=model;
-          if(localStorage.getItem(username)===null){
+          const model = this.$refs[formName].model;
+          const { username, password } = model;
+          if (localStorage.getItem(username) === null) {
             this.$message.error("用户尚未注册，请先注册");
             this.$refs[formName].resetFields();
             return;
           }
-          if(localStorage.getItem(username)===password){
-            sessionStorage.setItem('token',uuid.v4());
+          if (
+            JSON.parse(localStorage.getItem(username)).password === password
+          ) {
+            sessionStorage.setItem("token", uuid.v4());
             this.$message.success("登录成功，正在前往首页。。。");
-            sessionStorage.setItem("nowUser",username);//设置当前用户，防止用户使用此名字注册
-            sessionStorage.setItem("activePath",'/index');
-            setTimeout(()=>{
-              this.$router.push('/home');
-            },1000);
-          }else{
+            sessionStorage.setItem("nowUser", username); //设置当前用户，防止用户使用此名字注册
+            sessionStorage.setItem("activePath", "/index");
+            setTimeout(() => {
+              this.$router.push("/home");
+            }, 1000);
+          } else {
             this.$message.error("用户名或密码错误");
           }
         } else {
@@ -184,16 +199,16 @@ export default {
         }
       });
     },
-    enterLogin(){
-      this.login('ruleForm');
-    }
+    enterLogin() {
+      this.login("ruleForm");
+    },
   },
 };
 </script>
 
 <style  scoped>
 .login {
-  background:linear-gradient(0.25turn,#3f6949, #3f5571);
+  background: linear-gradient(0.25turn, #3f6949, #3f5571);
   width: 100%;
   height: 100%;
   position: absolute;
@@ -214,8 +229,7 @@ export default {
   min-height: 420px;
   border-radius: 10px;
   text-align: center;
-  box-shadow: 10px 10px 5px #4e8186
-
+  box-shadow: 10px 10px 5px #4e8186;
 }
 .logo_image {
   width: 100px;
@@ -299,17 +313,17 @@ export default {
 .footer:hover {
   color: white;
 }
-.login>>>.el-input__inner:focus{
+.login >>> .el-input__inner:focus {
   border-color: #3f6949;
 }
-.login>>>.el-form-item.is-error .el-input__inner:focus{
+.login >>> .el-form-item.is-error .el-input__inner:focus {
   border-color: #f56c6c;
 }
-.el-form-item.is-required{
+.el-form-item.is-required {
   margin-bottom: 18px;
 }
-.btn{
-  background: linear-gradient(0.25turn,#4f7458,#455974);
+.btn {
+  background: linear-gradient(0.25turn, #4f7458, #455974);
   color: white;
   opacity: 0.95;
 }

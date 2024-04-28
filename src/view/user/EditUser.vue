@@ -55,7 +55,11 @@
         <el-tag size="mini" type="primary">{{ user.tag }}</el-tag>
       </el-form-item>
       <el-form-item label="身份">
-        <el-tag size="mini" :type="user.permission=='admin'?'danger':'primary'">{{ user.permission=='admin'?'管理员':'普通用户' }}</el-tag>
+        <!-- 单选框： -->
+        <el-select v-model="user.permission" placeholder="请选择身份">
+          <el-option label="" value="admin"></el-option>
+          <el-option label="普通用户" value="user"></el-option>
+        </el-select>
       </el-form-item>
       <!-- 保存和取消按钮 -->
       <el-form-item>
