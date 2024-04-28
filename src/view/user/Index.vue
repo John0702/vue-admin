@@ -61,7 +61,7 @@
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table ref="table" :data="nowPageData" border stripe>
+      <el-table ref="table" :data="nowPageData" border stripe @sort-change=onSortChange>
         <el-table-column type="index" label="序号" width="50" />
         <el-table-column prop="userName" label="姓名" show-overflow-tooltip />
         <el-table-column prop="sex" label="性别" show-overflow-tooltip>
@@ -70,14 +70,37 @@
           prop="EnglishName"
           label="英文名"
           show-overflow-tooltip
+          width="100"
         />
         <el-table-column
           prop="phone"
           label="手机号"
+          sortable="custom"
           show-overflow-tooltip
           width="150"
         />
-        <el-table-column prop="status" label="状态" show-overflow-tooltip />
+        <el-table-column
+          prop="age"
+          label="年龄"
+          sortable="custom"
+          show-overflow-tooltip
+        />
+        <el-table-column prop="state" label="状态" show-overflow-tooltip >
+          <template slot-scope="scope">
+            <el-tag
+              v-if="scope.row.state"
+              type="danger"
+              size="small"
+              >已注销</el-tag
+            >
+            <el-tag
+              v-else
+              type="success"
+              size="small"
+              >正常</el-tag
+            >
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="250">
           <template slot-scope="scope">
             <el-button
@@ -88,6 +111,7 @@
             <el-button
               type="primary"
               size="small"
+              v-show="scope.row.state == 0"
               @click="$router.push(`/user/edit?id=${scope.row.id}`)"
               >编辑</el-button
             >
@@ -160,6 +184,21 @@ export default {
     document.onkeydown = null;
   },
   methods: {
+    onSortChange({ prop, order }) {
+      let tmpData = JSON.parse(localStorage.getItem("userData"));
+      if (order === "ascending") {
+        this.userData.sort((a, b) => a[prop] - b[prop]);
+      } else if(order === "descending") {
+        this.userData.sort((a, b) => b[prop] - a[prop]);
+      }
+      else{
+        this.userData = tmpData;
+      }
+      this.nowPageData = this.userData.slice(
+        (this.searchForm.current - 1) * this.searchForm.size,
+        this.searchForm.current * this.searchForm.size
+      );
+    },
     updateSearch(){
       sessionStorage.setItem("userSearch", JSON.stringify(this.searchForm));
     },
@@ -167,9 +206,6 @@ export default {
       const result = await this.$axios.get("/user/list");
       if (result.data.code === 200) {
         this.userData = result.data.data.records;
-        this.userData.forEach((item) => {
-          item.status = item.state ? "已注销" : "正常";
-        });
         localStorage.setItem("userData", JSON.stringify(this.userData));
         this.total = this.userData.length;
         this.nowPageData = this.userData.slice(0, this.searchForm.size);

@@ -10,6 +10,7 @@
           style="float: right;margin-right: 10px"
           size="small"
           type="primary"
+          v-show="userInfo.state===0"
           @click="$router.push(`/user/edit?id=${userInfo.id}`)"
           >编辑</el-button>
       </div>
@@ -74,7 +75,7 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 身份 </template>
-          <el-tag size="mini" :type="userInfo.permission=='admin'?'danger':'primary'">{{ userInfo.permission=='admin'?'管理员':'普通用户' }}</el-tag>
+          <el-tag size="mini" :type="userInfo.permission=='admin'?'danger':'primary'">{{ userInfo.permission=='admin'?'':'普通用户' }}</el-tag>
         </el-descriptions-item>
       </el-descriptions>
     </el-card>
