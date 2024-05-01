@@ -23,11 +23,11 @@ Mock.mock("/open-book/user/list", "get", {
         userName: "@cname",
         "sex|1": ["男", "女"],
         EnglishName: "@first",
+        "age|18-30": 1,
         phone: /^1[385][1-9]\d{8}/,
         "state|1": [0, 1],
         "courseNum|1-10": 1,
         "courseOrder|1-10": 1,
-        "age|18-30": 1,
         address: "@county(true)",
         avatar: require("@/assets/img/open-book.svg"),
         "tag|1": ["Java", "Python", "Vue", "React", "C++", "C#", "Go", "PHP"],
@@ -103,14 +103,19 @@ Mock.mock("/open-book/order/list", "get", {
         "sex|1": ["男", "女"],
         phone: /^1[385][1-9]\d{8}/,
         address: "@county(true)",
-        payTime: "@datetime",
-        "payType|1": ["alipay", "wechat"]
+        "payment|1": [
+          {
+            payState: 1,
+            payTime: "@datetime",
+            "payType|1": ["alipay", "wechat"]
+          },
+          { payState: 0 }
+        ]
       }
     ]
   },
   message: "ok"
 });
-
 // 文章数据
 Mock.mock("/open-book/article/list", "get", {
   code: 200,

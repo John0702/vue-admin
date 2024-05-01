@@ -74,8 +74,8 @@
           <el-tag size="mini" type="primary">{{ userInfo.tag }}</el-tag>
         </el-descriptions-item>
         <el-descriptions-item>
-          <template slot="label"> 身份 </template>
-          <el-tag size="mini" :type="userInfo.permission=='admin'?'danger':'primary'">{{ userInfo.permission=='admin'?'':'普通用户' }}</el-tag>
+          <template slot="label"> 权限 </template>
+          <el-tag size="mini" :type="userInfo.permission=='admin'?'danger':'primary'">{{ userInfo.permission=='admin'?'管理者':'普通用户' }}</el-tag>
         </el-descriptions-item>
       </el-descriptions>
     </el-card>

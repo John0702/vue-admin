@@ -54,10 +54,10 @@
       <el-form-item label="擅长语言">
         <el-tag size="mini" type="primary">{{ user.tag }}</el-tag>
       </el-form-item>
-      <el-form-item label="身份">
+      <el-form-item label="权限">
         <!-- 单选框： -->
-        <el-select v-model="user.permission" placeholder="请选择身份">
-          <el-option label="" value="admin"></el-option>
+        <el-select v-model="user.permission">
+          <el-option label="管理员" value="admin"></el-option>
           <el-option label="普通用户" value="user"></el-option>
         </el-select>
       </el-form-item>

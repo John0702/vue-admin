@@ -95,36 +95,30 @@
             class="el-menu-vertical-demo"
             :collapse="isCollapse"
           >
-            <el-menu-item index="/index" @click="saveActiveNav('/index')">
+            <el-menu-item index="/index">
               <i class="el-icon-house"></i>
               <span slot="title">首页</span>
             </el-menu-item>
             <el-menu-item
-              index="/user/list"
-              @click="saveActiveNav('/user/list')"
-              :disabled="!permission"
+              :index="permission ? '/user/list' : '/user/unAuthorize'"
             >
               <i class="el-icon-user"></i>
               <span slot="title">用户管理</span>
             </el-menu-item>
             <el-menu-item
-              index="/order/list"
-              @click="saveActiveNav('/order/list')"
-              :disabled="!permission"
+              :index="permission ? '/order/list' : '/order/unAuthorize'"
             >
               <i class="el-icon-tickets"></i>
               <span slot="title">订单管理</span>
             </el-menu-item>
             <el-menu-item
               index="/course/list"
-              @click="saveActiveNav('/course/list')"
             >
               <i class="el-icon-notebook-1"></i>
               <span slot="title">课程管理</span>
             </el-menu-item>
             <el-menu-item
               index="/article/list"
-              @click="saveActiveNav('/article/list')"
             >
               <i class="el-icon-reading"></i>
               <span slot="title">文章管理</span>
@@ -147,7 +141,7 @@
 
 <script>
 import Breadcrumb from "../components/Breadcrumb.vue";
-
+import md5 from "js-md5";
 export default {
   components: { Breadcrumb },
   data() {
@@ -192,7 +186,7 @@ export default {
     $route() {
       const path = this.$route.path.split("/")[1];
       const mainPaths = ["course", "user", "order", "article"];
-      if (mainPaths.includes(path)) {
+      if (mainPaths.includes(path)&&this.permission) {
         this.activePath = "/" + path + "/list";
       } else {
         this.activePath = this.$route.path;
@@ -201,11 +195,6 @@ export default {
     },
   },
   methods: {
-    // 保存链接的激活状态
-    saveActiveNav(activePath) {
-      sessionStorage.setItem("activePath", activePath);
-      this.activePath = activePath;
-    },
     // 修改密码
     editPassword() {
       this.$refs.editPasswordForm.validate(async (valid) => {
@@ -217,15 +206,17 @@ export default {
           return this.$message.error("两次密码不一致，请重新输入！");
         }
         if (
-          this.editPasswordForm.oldPassword ===
+          md5(this.editPasswordForm.oldPassword) ===
           JSON.parse(localStorage.getItem(sessionStorage.getItem("nowUser")))
             .password
         ) {
           localStorage.setItem(
             sessionStorage.getItem("nowUser"),
             JSON.stringify({
-              ...JSON.parse(localStorage.getItem(sessionStorage.getItem("nowUser"))),
-              password: this.editPasswordForm.newPassword,
+              ...JSON.parse(
+                localStorage.getItem(sessionStorage.getItem("nowUser"))
+              ),
+              password: md5(this.editPasswordForm.newPassword),
             })
           );
           this.$message.success("密码修改成功，请重新登录！");

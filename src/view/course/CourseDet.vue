@@ -62,6 +62,11 @@
             : "暂无简介" }}
         </p>
       </el-card>
+      <!-- 课程地址 -->
+      <el-divider>课程地址</el-divider>
+      <el-card class="course_info">
+        <a :href="address" target="blank" >Vue2全家桶</a>
+      </el-card>
     </el-drawer>
   </div>
 </template>
@@ -70,6 +75,7 @@
 export default {
   data() {
     return {
+      address:'https://www.bilibili.com/video/BV1Zy4y1K7SH/?spm_id_from=333.788.recommend_more_video.2&vd_source=7b21d0966b317d99c8fb72f0b800ee82',
       drawer: false,
       formData: {
         id: "",
