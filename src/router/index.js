@@ -128,6 +128,36 @@ const router = new Router({
             title:'新增订单'
           },
           component:()=>import('@/view/order/EditOrder.vue')
+        },
+        {
+          path:'/user/unAuthorize',
+          meta:{
+            title:'暂无权限'
+          },
+          component:()=>import('@/view/unAuthorize.vue')
+        },
+        {
+          path: '/order/unAuthorize',
+          meta: {
+            title: '暂无权限'
+          },
+          component: () => import('@/view/unAuthorize.vue')
+        },
+        {
+          path:'/course',
+          redirect:'/course/list',
+        },
+        {
+          path:'/user',
+          redirect:'/user/list',
+        },
+        {
+          path:'/article',
+          redirect:'/article/list',
+        },
+        {
+          path:'/order',
+          redirect:'/order/list',
         }
       ]
     },

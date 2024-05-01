@@ -94,6 +94,7 @@
 </template>
 <script>
 const uuid = require("uuid");
+import md5 from "js-md5";
 export default {
   data() {
     return {
@@ -124,7 +125,7 @@ export default {
     if (localStorage.getItem("admin") === null) {
       localStorage.setItem(
         "admin",
-        JSON.stringify({ password: "admin", permission: "admin" })
+        JSON.stringify({ password: md5("admin"), permission: "admin" })
       );
     }
   },
@@ -157,7 +158,7 @@ export default {
           }
           localStorage.setItem(
             this.form.username,
-            JSON.stringify({ password: this.form.password, permission: "user" })
+            JSON.stringify({ password: md5(this.form.password), permission: "user" })
           );
           sessionStorage.setItem("token", uuid.v4());
           sessionStorage.setItem("nowUser", this.form.username); //设置当前用户，防止用户使用此名字注册
@@ -182,7 +183,7 @@ export default {
             return;
           }
           if (
-            JSON.parse(localStorage.getItem(username)).password === password
+            JSON.parse(localStorage.getItem(username)).password === md5(password)
           ) {
             sessionStorage.setItem("token", uuid.v4());
             this.$message.success("登录成功，正在前往首页。。。");

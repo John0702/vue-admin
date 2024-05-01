@@ -2,7 +2,7 @@
   <!-- 编写一个编辑用户信息表单 -->
   <div class="content">
     <el-card class="box-card">
-      <el-form label-width="100px" ref="form" :model="order" :rules="rules" >
+      <el-form label-width="100px" ref="form" :model="order" :rules="rules">
         <el-form-item label="下单人:" prop="userName">
           <el-input v-model="order.userName"></el-input>
         </el-form-item>
@@ -25,25 +25,33 @@
             :max="9999"
             :step="1"
             :precision="2"
-            ></el-input-number>
+          ></el-input-number>
         </el-form-item>
         <el-form-item label="联系地址:">
           <el-input v-model="order.address"></el-input>
         </el-form-item>
-        <el-form-item label="支付时间:" prop="payTime">
-          <el-date-picker
-            v-model="order.payTime"
-            type="datetime"
-            placeholder="选择日期时间"
-            popper-class="datePicker"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="支付方式:" prop="payType">
-          <el-radio-group v-model="order.payType">
-            <el-radio label="alipay">支付宝</el-radio>
-            <el-radio label="wechat">微信支付</el-radio>
+        <el-form-item label="支付状态" prop="payment.payState">
+          <el-radio-group v-model="order.payment.payState">
+            <el-radio :label="1">已支付</el-radio>
+            <el-radio :label="0">未支付</el-radio>
           </el-radio-group>
         </el-form-item>
+        <template v-if="order.payment.payState">
+          <el-form-item label="支付时间:" prop="payment.payTime">
+            <el-date-picker
+              v-model="order.payment.payTime"
+              type="datetime"
+              placeholder="选择日期时间"
+              popper-class="datePicker"
+            ></el-date-picker>
+          </el-form-item>
+          <el-form-item label="支付方式:" prop="payment.payType">
+            <el-radio-group v-model="order.payment.payType">
+              <el-radio label="alipay">支付宝</el-radio>
+              <el-radio label="wechat">微信支付</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </template>
         <!-- 保存和取消按钮 -->
         <el-form-item>
           <el-button type="primary" @click="onSubmit('form')">保 存</el-button>
@@ -55,7 +63,7 @@
 </template>
 
   <script>
-  import  dateTransform  from "@/utils/dateTransform";
+import dateTransform from "@/utils/dateTransform";
 export default {
   data() {
     return {
@@ -66,8 +74,11 @@ export default {
         courseName: "",
         coursePrice: "",
         address: "",
-        payTime: "",
-        payType: "",
+        payment: {
+          payState: 0,
+          payTime: "",
+          payType: "",
+        },
       },
       rules: {
         sex: [{ required: true, message: "请选择性别", trigger: "blur" }],
@@ -78,22 +89,27 @@ export default {
         courseName: [
           { required: true, message: "请输入课程名称", trigger: "blur" },
         ],
-        payTime: [
-          { required: true, message: "请选择支付时间", trigger: "blur" },
-        ],
-        payType: [
-          { required: true, message: "请选择支付方式", trigger: "blur" },
-        ],
+        payment: {
+          payTime: [
+            { required: true, message: "请选择支付时间", trigger: "blur" },
+          ],
+          payType: [
+            { required: true, message: "请选择支付方式", trigger: "blur" },
+          ],
+          payState: [
+            { required: true, message: "请选择支付状态", trigger: "blur" },
+          ],
+        },
       },
     };
   },
   created() {
-    if(this.$route.query.id){
+    if (this.$route.query.id) {
       this.getOrderDetail(this.$route.query.id);
     }
+    console.log(this.order);
   },
   methods: {
-
     getOrderDetail(id) {
       // 通过id获取用户信息
       this.order = JSON.parse(localStorage.getItem("orderData")).find(
@@ -107,7 +123,9 @@ export default {
           // 新增
           if (type == "add") {
             this.order.id = new Date().getTime();
-            this.order.payTime = dateTransform(this.order.payTime);
+            this.order.payment.payTime = dateTransform(
+              this.order.payment.payTime
+            );
 
             let newData = this.order;
             localStorage.setItem(
@@ -120,7 +138,9 @@ export default {
             this.$message.success("新增成功");
             this.$router.back();
           } else {
-            this.order.payTime = dateTransform(this.order.payTime);
+            this.order.payment.payTime = dateTransform(
+              this.order.payment.payTime
+            );
             // 编辑
             let newData = JSON.parse(localStorage.getItem("orderData")).map(
               (item) => {

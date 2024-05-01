@@ -42,13 +42,9 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label"> 课程封面 </template>
-          <el-popover placement="right" trigger="hover">
+          <el-popover placement="bottom" trigger="click">
             <el-image :src="orderInfo.courseUrl" fit="contain" />
-            <el-image
-              slot="reference"
-              :src="orderInfo.courseUrl"
-              fit="contain"
-            />
+            <el-button slot="reference" type="small">点击查看</el-button>
           </el-popover>
         </el-descriptions-item>
         <el-descriptions-item>
@@ -56,17 +52,29 @@
           {{ orderInfo.coursePrice ? orderInfo.coursePrice : 0 }}
         </el-descriptions-item>
         <el-descriptions-item>
-          <template slot="label"> 支付时间 </template>
-          <el-tag size="mini" type="primary">{{ orderInfo.payTime }}</el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label"> 支付方式 </template>
+          <template slot="label"> 订单状态 </template>
           <el-tag
             size="mini"
-            :type="orderInfo.payType == 'wechat' ? 'default' : 'primary'"
-            >{{ orderInfo.payType == "alipay" ? "支付宝" : "微信支付" }}</el-tag
+            :type="orderInfo.payment.payState ? 'success' : 'danger'"
+            >{{ orderInfo.payment.payState  ? "已支付" : "未支付" }}</el-tag
           >
         </el-descriptions-item>
+        <template v-if="orderInfo.payment.payState">
+          <el-descriptions-item>
+            <template slot="label"> 支付时间 </template>
+            <el-tag size="mini" type="primary">{{ orderInfo.payment.payTime }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template slot="label"> 支付方式 </template>
+            <el-tag
+              size="mini"
+              :type="orderInfo.payment.payType == 'wechat' ? 'default' : 'primary'"
+              >{{
+                orderInfo.payment.payType == "alipay" ? "支付宝" : "微信支付"
+              }}</el-tag
+            >
+          </el-descriptions-item>
+        </template>
       </el-descriptions>
     </el-card>
   </div>
@@ -76,6 +84,7 @@
 export default {
   data() {
     return {
+      visible: false,
       orderInfo: {
         id: "",
       },
@@ -112,6 +121,12 @@ export default {
   background-color: #dcf5e1;
 }
 .el-button.el-button--primary.el-button--small {
+  color: white;
+  border-color: #3f6949;
+  background-color: #3f6949;
+}
+.el-button:focus,
+.el-button:hover {
   color: white;
   border-color: #3f6949;
   background-color: #3f6949;

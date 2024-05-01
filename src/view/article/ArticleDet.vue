@@ -57,7 +57,12 @@
           {{ formData.articleDesc ? formData.articleDesc : "暂无简介" }}
         </p>
       </el-card>
-      <div class="updateTime">更新时间：{{  formData.updateTime }}</div>
+      <!-- 文章地址 -->
+      <el-divider>文章地址</el-divider>
+      <el-card class="article_info">
+        <a :href="address" target="blank">Vue2文档</a>
+      </el-card>
+      <div class="updateTime">更新时间：{{ formData.updateTime }}</div>
     </el-drawer>
   </div>
 </template>
@@ -66,6 +71,7 @@
 export default {
   data() {
     return {
+      address: "https://v2.cn.vuejs.org/v2/guide/",
       drawer: false,
       formData: {
         id: "",
@@ -98,7 +104,7 @@ export default {
 .content >>> .el-drawer__header {
   margin-bottom: 15px;
 }
-.updateTime{
+.updateTime {
   text-align: right;
   color: gray;
   font-size: small;
