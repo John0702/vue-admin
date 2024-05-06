@@ -1,6 +1,87 @@
 import Mock from "mockjs";
-
+import md5 from "js-md5";
+const uuid = require("uuid");
 const Random = Mock.Random;
+
+//mock登录
+Mock.mock("/open-book/login", "post", req => {
+  const data = JSON.parse(req.body);
+  console.log(data)
+  if (localStorage.getItem(data.username) === null) {
+    return {
+      code: 400,
+      msg: "用户尚未注册，请先注册！"
+    };
+  }
+  if (
+    JSON.parse(localStorage.getItem(data.username)).password === data.password
+  ) {
+    sessionStorage.setItem("token", uuid.v4());
+    sessionStorage.setItem("nowUser", data.username); //设置当前用户，防止用户使用此名字注册
+    sessionStorage.setItem("activePath", "/index");
+    return {
+      code: 200,
+      msg: "登录成功,正在前往首页..."
+    };
+  } else {
+    return {
+      code: 400,
+      msg: "密码错误！"
+    };
+  }
+});
+//mock注册
+Mock.mock("/open-book/register", "post", req => {
+  const data = JSON.parse(req.body);
+  if (
+    localStorage.getItem(data.username) !== null ||
+    data.username === "admin"
+  ) {
+    return {
+      code: 400,
+      msg: "用户名已存在！"
+    };
+  } else {
+    localStorage.setItem(
+      data.username,
+      JSON.stringify({
+        password: md5(data.password),
+        permission: "user"
+      })
+    );
+    sessionStorage.setItem("token", uuid.v4());
+    sessionStorage.setItem("nowUser", data.username); //设置当前用户，防止用户使用此名字注册
+    return {
+      code: 200,
+      msg: "注册成功，正在前往首页..."
+    };
+  }
+});
+//mock修改密码
+Mock.mock("/open-book/editPassword", "post", req => {
+  const data = JSON.parse(req.body);
+  console.log(data)
+  if (
+    JSON.parse(localStorage.getItem(data.username)).password === data.oldPassword
+  ) {
+    localStorage.setItem(
+      data.username,
+      JSON.stringify({
+        ...JSON.parse(localStorage.getItem(data.username)),
+        password: data.newPassword,
+      })
+    );
+    return {
+      code: 200,
+      msg: "密码修改成功，请重新登录！"
+    };
+  } else {
+    return {
+      code: 400,
+      msg: "原密码错误，请重新输入！"
+    };
+  }
+});
 // mock登录后用户的数据
 Mock.mock("/open-book/home/init", "get", {
   code: 200,

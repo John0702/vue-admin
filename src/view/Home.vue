@@ -201,30 +201,25 @@ export default {
         ) {
           return this.$message.error("两次密码不一致，请重新输入！");
         }
-        if (
-          md5(this.editPasswordForm.oldPassword) ===
-          JSON.parse(localStorage.getItem(sessionStorage.getItem("nowUser")))
-            .password
-        ) {
-          localStorage.setItem(
-            sessionStorage.getItem("nowUser"),
-            JSON.stringify({
-              ...JSON.parse(
-                localStorage.getItem(sessionStorage.getItem("nowUser"))
-              ),
-              password: md5(this.editPasswordForm.newPassword),
-            })
-          );
-          this.$message.success("密码修改成功，请重新登录！");
-          sessionStorage.clear();
-          this.closeEditPassword();
-
-          setTimeout(() => {
-            this.$router.push("/login");
-          }, 1000);
-        } else {
-          return this.$message.error("原密码错误，请重新输入！");
-        }
+        this.$axios
+          .post("/editPassword", {
+            username: sessionStorage.getItem("nowUser"),
+            oldPassword: md5(this.editPasswordForm.oldPassword),
+            newPassword: md5(this.editPasswordForm.newPassword),
+          })
+          .then((res) => {
+            const data = res.data;
+            if (data.code===200) {
+              this.$message.success(data.msg);
+              sessionStorage.clear();
+              this.closeEditPassword();
+              setTimeout(() => {
+                this.$router.push("/login");
+              }, 1000);
+            } else {
+              return this.$message.error(data.msg);
+            }
+          });
       });
     },
     // 取消关闭密码

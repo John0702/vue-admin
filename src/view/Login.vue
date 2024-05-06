@@ -95,6 +95,7 @@
 <script>
 const uuid = require("uuid");
 import md5 from "js-md5";
+import { del } from "vue";
 export default {
   data() {
     return {
@@ -148,24 +149,24 @@ export default {
             this.$message.error("两次密码输入不一致");
             return;
           }
-          if (localStorage.getItem(this.form.username) !== null) {
-            this.$message.error("用户已注册，请直接登录");
-            return;
-          }
-          if (this.form.username === "admin") {
-            this.$message.error("用户名已存在，请更换用户名");
-            return;
-          }
-          localStorage.setItem(
-            this.form.username,
-            JSON.stringify({ password: md5(this.form.password), permission: "user" })
-          );
-          sessionStorage.setItem("token", uuid.v4());
-          sessionStorage.setItem("nowUser", this.form.username); //设置当前用户，防止用户使用此名字注册
-          this.$message.success("注册成功，正在前往首页。。。");
-          setTimeout(() => {
-            this.$router.push("/home");
-          }, 1000);
+          this.$axios
+            .post("/register", {
+              username: this.form.username,
+              password: md5(this.form.password),
+            })
+            .then((res) => {
+              console.log(res);
+              const data = res.data;
+              if (data.code === 400) {
+                this.$message.error(data.msg);
+                return;
+              } else if (data.code === 200) {
+                this.$message.success(data.msg);
+                setTimeout(() => {
+                  this.$router.push("/home");
+                }, 1000);
+              }
+            });
         } else {
           return false;
         }
@@ -175,26 +176,23 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           // 业务逻辑
-          const model = this.$refs[formName].model;
-          const { username, password } = model;
-          if (localStorage.getItem(username) === null) {
-            this.$message.error("用户尚未注册，请先注册");
-            this.$refs[formName].resetFields();
-            return;
-          }
-          if (
-            JSON.parse(localStorage.getItem(username)).password === md5(password)
-          ) {
-            sessionStorage.setItem("token", uuid.v4());
-            this.$message.success("登录成功，正在前往首页。。。");
-            sessionStorage.setItem("nowUser", username); //设置当前用户，防止用户使用此名字注册
-            sessionStorage.setItem("activePath", "/index");
-            setTimeout(() => {
-              this.$router.push("/home");
-            }, 1000);
-          } else {
-            this.$message.error("用户名或密码错误");
-          }
+          this.$axios
+            .post("/login", {
+              username: this.form.username,
+              password: md5(this.form.password),
+            })
+            .then((res) => {
+              const data = res.data;
+              if (data.code === 400) {
+                this.$message.error(data.msg);
+                return;
+              } else if (data.code === 200) {
+                this.$message.success(data.msg);
+                setTimeout(() => {
+                  this.$router.push("/home");
+                }, 1000);
+              }
+            });
         } else {
           return false;
         }
