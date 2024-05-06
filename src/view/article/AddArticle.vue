@@ -116,7 +116,6 @@ export default {
     };
   },
   created() {
-    // this.getarticleCategory();
     if (this.$route.query.id) {
       this.getArticleDetail(this.$route.query.id);
     }

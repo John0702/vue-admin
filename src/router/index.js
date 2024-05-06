@@ -16,7 +16,6 @@ const router = new Router({
       },
       component: () => import('@/view/Login.vue')
     },
-
     {
       path: '/home',
       meta: {

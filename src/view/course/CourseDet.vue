@@ -43,7 +43,6 @@
         </el-row>
       </el-card>
       <el-divider>课程封面</el-divider>
-
       <!-- 课程封面 -->
       <el-card class="course_info">
         <div style="width: 100%; margin: 0px auto">
