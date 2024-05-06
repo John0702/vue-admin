@@ -137,7 +137,6 @@ Mock.mock("/open-book/article/list", "get", {
   },
   message: "ok"
 });
-
 // 上传课程封面
 Mock.mock("/open-book/course/upload", "post", req => {
   return {

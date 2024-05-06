@@ -105,23 +105,19 @@
               <i class="el-icon-user"></i>
               <span slot="title">用户管理</span>
             </el-menu-item>
+            <el-menu-item index="/course/list">
+              <i class="el-icon-notebook-1"></i>
+              <span slot="title">课程管理</span>
+            </el-menu-item>
+            <el-menu-item index="/article/list">
+              <i class="el-icon-reading"></i>
+              <span slot="title">文章管理</span>
+            </el-menu-item>
             <el-menu-item
               :index="permission ? '/order/list' : '/order/unAuthorize'"
             >
               <i class="el-icon-tickets"></i>
               <span slot="title">订单管理</span>
-            </el-menu-item>
-            <el-menu-item
-              index="/course/list"
-            >
-              <i class="el-icon-notebook-1"></i>
-              <span slot="title">课程管理</span>
-            </el-menu-item>
-            <el-menu-item
-              index="/article/list"
-            >
-              <i class="el-icon-reading"></i>
-              <span slot="title">文章管理</span>
             </el-menu-item>
           </el-menu>
         </el-aside>
@@ -186,7 +182,7 @@ export default {
     $route() {
       const path = this.$route.path.split("/")[1];
       const mainPaths = ["course", "user", "order", "article"];
-      if (mainPaths.includes(path)&&this.permission) {
+      if (mainPaths.includes(path) && this.permission) {
         this.activePath = "/" + path + "/list";
       } else {
         this.activePath = this.$route.path;
