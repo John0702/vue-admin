@@ -76,6 +76,19 @@
             >新增订单</el-button
           ></el-col
         >
+        <el-col :span="8">
+          <div>
+            <el-radio-group
+              size="small"
+              @change="handleSearch()"
+              v-model="searchForm.state"
+            >
+              <el-radio-button label="">全部</el-radio-button>
+              <el-radio-button label="1">已支付</el-radio-button>
+              <el-radio-button label="0">待支付</el-radio-button>
+            </el-radio-group>
+          </div>
+        </el-col>
       </el-row>
 
       <!-- 表格 -->
@@ -108,6 +121,22 @@
           show-overflow-tooltip
           width="120"
         />
+        <el-table-column prop="payment.payState" label="支付状态" show-overflow-tooltip >
+          <template slot-scope="scope">
+            <el-tag
+              v-if="scope.row.payment.payState==='0'"
+              type="danger"
+              size="small"
+              >待支付</el-tag
+            >
+            <el-tag
+              v-else
+              type="success"
+              size="small"
+              >已支付</el-tag
+            >
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="250">
           <template slot-scope="scope">
             <el-button
@@ -157,6 +186,7 @@ export default {
         courseName: "",
         sex: "",
         phone: "",
+        state: "",
         priceRange: {
           start: null,
           end: null,
@@ -240,11 +270,12 @@ export default {
         id = "",
         phone = "",
         courseName = "",
+        state = "",
       } = this.searchForm;
       // 过滤数据
       this.orderData = JSON.parse(localStorage.getItem("orderData")).filter(
         (item) => {
-          return (
+          const filter =
             item.userName.includes(userName) &&
             item.sex.includes(sex) &&
             item.id.includes(id) &&
@@ -255,8 +286,12 @@ export default {
               : true) &&
             (this.searchForm.priceRange.end
               ? item.coursePrice <= this.searchForm.priceRange.end
-              : true)
-          );
+              : true);
+          if (state === "") {
+            return filter;
+          } else {
+            return filter && item.payment.payState == state;
+          }
         }
       );
       this.searchForm.current = 1;

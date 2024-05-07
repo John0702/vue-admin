@@ -55,11 +55,11 @@
           <template slot="label"> 订单状态 </template>
           <el-tag
             size="mini"
-            :type="orderInfo.payment.payState ? 'success' : 'danger'"
-            >{{ orderInfo.payment.payState  ? "已支付" : "未支付" }}</el-tag
+            :type="orderInfo.payment.payState === '1' ? 'success' : 'danger'"
+            >{{ orderInfo.payment.payState==='1'  ? "已支付" : "待支付" }}</el-tag
           >
         </el-descriptions-item>
-        <template v-if="orderInfo.payment.payState">
+        <template v-if="orderInfo.payment.payState==='1'">
           <el-descriptions-item>
             <template slot="label"> 支付时间 </template>
             <el-tag size="mini" type="primary">{{ orderInfo.payment.payTime }}</el-tag>
