@@ -288,20 +288,14 @@ export default {
       // 过滤数据
       this.courseData = JSON.parse(localStorage.getItem("courseData")).filter(
         (item) => {
+          const filter =
+            item.courseName.includes(courseName) &&
+            item.code.includes(code) &&
+            item.lecturer.id == (lecturer == "" ? item.lecturer.id : lecturer);
           if (state !== "") {
-            return (
-              item.courseName.includes(courseName) &&
-              item.code.includes(code) &&
-              item.lecturer.id ==
-                (lecturer == "" ? item.lecturer.id : lecturer) &&
-              item.state == state
-            );
+            return filter && item.state == state;
           } else {
-            return (
-              item.courseName.includes(courseName) &&
-              item.code.includes(code) &&
-              item.lecturer.id == (lecturer == "" ? item.lecturer.id : lecturer)
-            );
+            return filter;
           }
         }
       );

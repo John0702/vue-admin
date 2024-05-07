@@ -36,7 +36,7 @@
         <p style="margin-top: 10px">
           <el-tag size="small" :style="{background: userInfo.state?'rgb(255 181 181)':'#dcf5e1', color: userInfo.state?'#ff0000':'#4f7458',borderColor:userInfo.state?'rgb(255 204 204)':'dcf5e1'}">
             <i class="fa fa-circle"></i>
-            {{ userInfo.status ? userInfo.status : "正常" }}</el-tag
+            {{ userInfo.state ? "已注销" : "正常" }}</el-tag
           >
         </p>
       </div>

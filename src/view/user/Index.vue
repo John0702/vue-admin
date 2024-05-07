@@ -61,7 +61,13 @@
         </el-col>
       </el-row>
       <!-- 表格 -->
-      <el-table ref="table" :data="nowPageData" border stripe @sort-change=onSortChange>
+      <el-table
+        ref="table"
+        :data="nowPageData"
+        border
+        stripe
+        @sort-change="onSortChange"
+      >
         <el-table-column type="index" label="序号" width="50" />
         <el-table-column prop="userName" label="姓名" show-overflow-tooltip />
         <el-table-column prop="sex" label="性别" show-overflow-tooltip>
@@ -85,20 +91,12 @@
           sortable="custom"
           show-overflow-tooltip
         />
-        <el-table-column prop="state" label="状态" show-overflow-tooltip >
+        <el-table-column prop="state" label="状态" show-overflow-tooltip>
           <template slot-scope="scope">
-            <el-tag
-              v-if="scope.row.state"
-              type="danger"
-              size="small"
+            <el-tag v-if="scope.row.state" type="danger" size="small"
               >已注销</el-tag
             >
-            <el-tag
-              v-else
-              type="success"
-              size="small"
-              >正常</el-tag
-            >
+            <el-tag v-else type="success" size="small">正常</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="250">
@@ -170,7 +168,7 @@ export default {
   },
   mounted() {
     document.onkeydown = (e) => {
-      if (e.code == 'Enter') {
+      if (e.code == "Enter") {
         this.handleSearch();
       }
     };
@@ -188,10 +186,9 @@ export default {
       let tmpData = JSON.parse(localStorage.getItem("userData"));
       if (order === "ascending") {
         this.userData.sort((a, b) => a[prop] - b[prop]);
-      } else if(order === "descending") {
+      } else if (order === "descending") {
         this.userData.sort((a, b) => b[prop] - a[prop]);
-      }
-      else{
+      } else {
         this.userData = tmpData;
       }
       this.nowPageData = this.userData.slice(
@@ -199,7 +196,7 @@ export default {
         this.searchForm.current * this.searchForm.size
       );
     },
-    updateSearch(){
+    updateSearch() {
       sessionStorage.setItem("userSearch", JSON.stringify(this.searchForm));
     },
     async getPageList() {
@@ -224,19 +221,14 @@ export default {
       // 过滤数据
       this.userData = JSON.parse(localStorage.getItem("userData")).filter(
         (item) => {
+          const filter =
+            item.userName.includes(userName) &&
+            item.sex.includes(sex) &&
+            item.EnglishName.includes(EnglishName);
           if (state !== "") {
-            return (
-              item.userName.includes(userName) &&
-              item.sex.includes(sex) &&
-              item.EnglishName.includes(EnglishName) &&
-              item.state == state
-            );
+            return filter && item.state == state;
           } else {
-            return (
-              item.userName.includes(userName) &&
-              item.sex.includes(sex) &&
-              item.EnglishName.includes(EnglishName)
-            );
+            return filter;
           }
         }
       );

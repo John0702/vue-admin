@@ -32,11 +32,11 @@
         </el-form-item>
         <el-form-item label="支付状态" prop="payment.payState">
           <el-radio-group v-model="order.payment.payState">
-            <el-radio :label="1">已支付</el-radio>
-            <el-radio :label="0">未支付</el-radio>
+            <el-radio label="1">已支付</el-radio>
+            <el-radio label="0">未支付</el-radio>
           </el-radio-group>
         </el-form-item>
-        <template v-if="order.payment.payState">
+        <template v-if="order.payment.payState==='1'">
           <el-form-item label="支付时间:" prop="payment.payTime">
             <el-date-picker
               v-model="order.payment.payTime"

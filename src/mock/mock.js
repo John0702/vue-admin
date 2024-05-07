@@ -6,7 +6,6 @@ const Random = Mock.Random;
 //mock登录
 Mock.mock("/open-book/login", "post", req => {
   const data = JSON.parse(req.body);
-  console.log(data)
   if (localStorage.getItem(data.username) === null) {
     return {
       code: 400,
@@ -60,7 +59,6 @@ Mock.mock("/open-book/register", "post", req => {
 //mock修改密码
 Mock.mock("/open-book/editPassword", "post", req => {
   const data = JSON.parse(req.body);
-  console.log(data)
   if (
     JSON.parse(localStorage.getItem(data.username)).password === data.oldPassword
   ) {
@@ -186,11 +184,11 @@ Mock.mock("/open-book/order/list", "get", {
         address: "@county(true)",
         "payment|1": [
           {
-            payState: 1,
+            payState: "1",
             payTime: "@datetime",
             "payType|1": ["alipay", "wechat"]
           },
-          { payState: 0 }
+          { payState: "0" }
         ]
       }
     ]
