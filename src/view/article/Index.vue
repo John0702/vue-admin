@@ -16,9 +16,9 @@
               placeholder="请输入文章名称"
             />
           </el-form-item>
-          <el-form-item label="文章编号:" prop="code">
+          <el-form-item label="文章编号:" prop="id">
             <el-input
-              v-model.trim="searchForm.code"
+              v-model.trim="searchForm.id"
               placeholder="请输入文章编号"
             />
           </el-form-item>
@@ -71,7 +71,7 @@
           width="120"
         />
         <el-table-column
-          prop="code"
+          prop="id"
           label="文章编号"
           show-overflow-tooltip
           width="120"
@@ -155,7 +155,7 @@ export default {
         size: 10,
         title: "",
         author: "",
-        code: "",
+        id: "",
       },
       // 总条数
       total: 0,
@@ -239,13 +239,13 @@ export default {
     },
     //搜索
     handleSearch() {
-      const { title = "", code = "", author = "" } = this.searchForm;
+      const { title = "", id = "", author = "" } = this.searchForm;
       // 过滤数据
       this.articleData = JSON.parse(localStorage.getItem("articleData")).filter(
         (item) => {
           return (
             item.title.includes(title) &&
-            item.code.includes(code) &&
+            item.id.includes(id) &&
             item.author.includes(author)
           );
         }

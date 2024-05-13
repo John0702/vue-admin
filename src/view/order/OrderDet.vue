@@ -91,8 +91,10 @@ export default {
     };
   },
   created() {
+    console.log(this.$route.query.id);
     this.orderInfo.id = this.$route.query.id;
     this.getUserDetail();
+    console.log(this.orderInfo);
   },
   methods: {
     getUserDetail() {
