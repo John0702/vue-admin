@@ -151,6 +151,7 @@
               >编辑</el-button
             >
             <el-button
+              v-if="scope.row.payment.payState==='1'"
               type="danger"
               size="small"
               @click="deleteOrder(scope.row.id)"

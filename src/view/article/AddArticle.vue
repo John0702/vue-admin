@@ -8,9 +8,6 @@
             placeholder="请输入文章名称"
           ></el-input>
         </el-form-item>
-        <el-form-item label="文章编号:" prop="code">
-          <el-input v-model="form.code" placeholder="请输入文章编号"></el-input>
-        </el-form-item>
         <el-form-item label="作者:" prop="author">
           <el-input
             v-model="form.author"
@@ -84,7 +81,7 @@ export default {
       dialogImageUrl: "",
       form: {
         title: "",
-        code: "",
+        id: "",
         articleUrl: "",
         pv: "",
         articleDesc: "",
@@ -96,13 +93,6 @@ export default {
             required: true,
             message: "请输入文章名称",
             trigger: "blur",
-          },
-        ],
-        code: [
-          {
-            required: true,
-            message: "请输入文章编号",
-            trigger: "change",
           },
         ],
         author: [

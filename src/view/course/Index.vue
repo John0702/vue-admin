@@ -16,9 +16,9 @@
               placeholder="请输入课程名称"
             />
           </el-form-item>
-          <el-form-item label="课程编号:" prop="code">
+          <el-form-item label="课程编号:" prop="id">
             <el-input
-              v-model.trim="searchForm.code"
+              v-model.trim="searchForm.id"
               placeholder="请输入课程编号"
             />
           </el-form-item>
@@ -86,7 +86,7 @@
           label="课程名称"
           show-overflow-tooltip
         />
-        <el-table-column prop="code" label="课程编号" show-overflow-tooltip />
+        <el-table-column prop="id" label="课程编号" show-overflow-tooltip />
         <el-table-column prop="courseUrl" label="课程封面" width="100">
           <template slot-scope="scope">
             <div>
@@ -187,7 +187,7 @@ export default {
         courseName: "",
         lecturer: "",
         state: "",
-        code: "",
+        id: "",
       },
       // 总条数
       total: 0,
@@ -281,7 +281,7 @@ export default {
     handleSearch() {
       const {
         courseName = "",
-        code = "",
+        id = "",
         lecturer = "",
         state = "",
       } = this.searchForm;
@@ -290,7 +290,7 @@ export default {
         (item) => {
           const filter =
             item.courseName.includes(courseName) &&
-            item.code.includes(code) &&
+            item.id.includes(id) &&
             item.lecturer.id == (lecturer == "" ? item.lecturer.id : lecturer);
           if (state !== "") {
             return filter && item.state == state;

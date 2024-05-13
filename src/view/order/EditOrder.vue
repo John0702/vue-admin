@@ -36,7 +36,7 @@
             <el-radio label="0">未支付</el-radio>
           </el-radio-group>
         </el-form-item>
-        <template v-if="order.payment.payState==='1'">
+        <template v-if="order.payment.payState === '1'">
           <el-form-item label="支付时间:" prop="payment.payTime">
             <el-date-picker
               v-model="order.payment.payTime"
@@ -85,7 +85,15 @@ export default {
         userName: [
           { required: true, message: "请输入下单人", trigger: "blur" },
         ],
-        phone: [{ required: true, message: "请输入手机号", trigger: "blur" }],
+        phone: [
+          {
+            required: true,
+            message: "请输入手机号",
+            trigger: "blur",
+            pattern: /^1[3456789]\d{9}$/,
+            message: "手机号格式不正确",
+          },
+        ],
         courseName: [
           { required: true, message: "请输入课程名称", trigger: "blur" },
         ],

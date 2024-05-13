@@ -123,7 +123,6 @@ Mock.mock("/open-book/course/list", "get", {
     total: 50,
     "records|50": [
       {
-        "id|+1": 1,
         courseName: "@ctitle(3,4)",
         "category|1": [
           ["1", "1-1"],
@@ -139,7 +138,7 @@ Mock.mock("/open-book/course/list", "get", {
           ["3", "3-3"]
         ],
         "price|1": [99, 199, 299, 399, 499],
-        code: "@string(5)",
+        id: "@id",
         "lecturer|1": [
           {
             id: 123123,
@@ -174,7 +173,7 @@ Mock.mock("/open-book/order/list", "get", {
     total: 50,
     "records|50": [
       {
-        id: "@string(5)",
+        id: "@id",
         userName: "@cname",
         courseName: "@ctitle(3,4)",
         "coursePrice|1": [99, 199, 299, 399, 499],
@@ -202,8 +201,7 @@ Mock.mock("/open-book/article/list", "get", {
     total: 50,
     "records|50": [
       {
-        "id|+1": 1,
-        code: "@string(5)",
+        id: "@id",
         title: "@ctitle(3,4)",
         articleUrl: require("@/assets/img/articleUrl.jpg"),
         author: "@cname",
