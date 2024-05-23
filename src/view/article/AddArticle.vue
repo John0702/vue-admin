@@ -146,7 +146,7 @@ export default {
           let type = this.$route.query.id ? "edit" : "add";
           // 新增
           if (type == "add") {
-            this.form.code = Random.string("number", 8);
+            this.form.id = Random.string("number", 8);
             this.form.articleUrl = this.newArticleUrl
               ? this.newArticleUrl
               : this.emptyUrl;
