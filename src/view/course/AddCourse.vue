@@ -3,7 +3,10 @@
     <el-card>
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="课程名称:" prop="courseName">
-          <el-input v-model="form.courseName" placeholder="请输入课程名称"></el-input>
+          <el-input
+            v-model="form.courseName"
+            placeholder="请输入课程名称"
+          ></el-input>
         </el-form-item>
         <el-form-item label="课程分类:" prop="category">
           <el-cascader
@@ -50,7 +53,9 @@
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
           >
-            <span slot="default">{{form.id?'更新课程封面':'上传课程封面'}}</span>
+            <span slot="default">{{
+              form.id ? "更新课程封面" : "上传课程封面"
+            }}</span>
 
             <div slot="tip" class="el-upload__tip">
               支持扩展名：.png .jpeg .jpg .gif .svg .bmp .webp ，文件大小限制
@@ -92,8 +97,6 @@ export default {
       dialogImageUrl: "",
       form: {
         id: "",
-        name: "",
-        code: "",
         lecturer: {
           id: "",
           name: "",
@@ -217,11 +220,12 @@ export default {
           let type = this.$route.query.id ? "edit" : "add";
           // 新增
           if (type == "add") {
-            this.form.id = new Date().getTime();
-            this.form.code = Random.string("number", 8);
+            this.form.id = String(new Date().getTime());
             this.form.state = "off";
             this.form.stateName = "未上架";
-            this.form.courseUrl = this.newCourseUrl?this.newCourseUrl:this.emptyUrl;
+            this.form.courseUrl = this.newCourseUrl
+              ? this.newCourseUrl
+              : this.emptyUrl;
 
             let newData = this.form;
             localStorage.setItem(
