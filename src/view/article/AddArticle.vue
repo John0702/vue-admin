@@ -36,6 +36,7 @@
             :on-success="uploadSuccess"
             :on-error="uploadError"
             :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
           >
             <span slot="default">{{
               form.id ? "更新文章封面" : "上传文章封面"
@@ -111,6 +112,9 @@ export default {
     }
   },
   methods: {
+    handleRemove(file) {
+      this.newArticleUrl = "";
+    },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
@@ -148,6 +152,7 @@ export default {
               : this.emptyUrl;
 
             let newData = this.form;
+            this.form.pv = 0;
             localStorage.setItem(
               "articleData",
               JSON.stringify([
@@ -163,7 +168,6 @@ export default {
               this.form.articleUrl = this.newArticleUrl;
             }
             this.form.updateTime = dateTransform(new Date());
-            this.form.pv = 0;
             let newData = JSON.parse(localStorage.getItem("articleData")).map(
               (item) => {
                 if (item.id == this.form.id) {

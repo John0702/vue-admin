@@ -48,6 +48,7 @@
             :on-success="uploadSuccess"
             :on-error="uploadError"
             :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
           >
             <span slot="default">{{form.id?'更新课程封面':'上传课程封面'}}</span>
 
@@ -182,6 +183,9 @@ export default {
     }
   },
   methods: {
+    handleRemove(file) {
+      this.newCourseUrl = "";
+    },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
