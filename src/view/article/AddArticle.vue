@@ -164,7 +164,6 @@ export default {
             }
             this.form.updateTime = dateTransform(new Date());
             this.form.pv = 0;
-            console.log(this.form);
             let newData = JSON.parse(localStorage.getItem("articleData")).map(
               (item) => {
                 if (item.id == this.form.id) {

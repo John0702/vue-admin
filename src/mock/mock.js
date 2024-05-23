@@ -44,7 +44,7 @@ Mock.mock("/open-book/register", "post", req => {
     localStorage.setItem(
       data.username,
       JSON.stringify({
-        password: md5(data.password),
+        password: data.password,
         permission: "user"
       })
     );

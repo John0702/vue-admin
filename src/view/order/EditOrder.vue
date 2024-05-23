@@ -115,7 +115,6 @@ export default {
     if (this.$route.query.id) {
       this.getOrderDetail(this.$route.query.id);
     }
-    console.log(this.order);
   },
   methods: {
     getOrderDetail(id) {
