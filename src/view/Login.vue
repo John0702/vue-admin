@@ -155,7 +155,6 @@ export default {
               password: md5(this.form.password),
             })
             .then((res) => {
-              console.log(res);
               const data = res.data;
               if (data.code === 400) {
                 this.$message.error(data.msg);
